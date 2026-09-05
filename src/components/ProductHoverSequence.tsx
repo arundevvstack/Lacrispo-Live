@@ -95,10 +95,10 @@ export default function ProductHoverSequence({
       {/* ================= CENTRAL MAIN PACKET ONLY ================= */}
       <motion.div
         animate={{
-          scale: isClicked ? 1.15 : isHovered ? 1.08 : 0.96,
+          scale: isClicked ? 1.12 : isHovered ? 1.06 : 0.96,
           y: isHovered ? -6 : [0, -6, 0],
-          rotateX: isHovered ? -mouseOffset.y * 10 : 0,
-          rotateY: isHovered ? mouseOffset.x * 12 : 0,
+          rotateX: isHovered ? -mouseOffset.y * 8 : 0,
+          rotateY: isHovered ? mouseOffset.x * 10 : 0,
           rotateZ: isHovered ? mouseOffset.x * 2 : 0,
         }}
         transition={{
@@ -108,31 +108,16 @@ export default function ProductHoverSequence({
           rotateY: { type: "spring", stiffness: 300, damping: 25 },
           rotateZ: { type: "spring", stiffness: 300, damping: 25 },
         }}
-        className="relative w-full h-[84%] flex items-center justify-center z-15 drop-shadow-[0_18px_35px_rgba(0,0,0,0.18)]"
+        className="relative w-full h-[88%] flex items-center justify-center z-15 drop-shadow-[0_18px_35px_rgba(0,0,0,0.75)]"
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full flex items-center justify-center">
           <Image
             src={image}
             alt={`${name} Pack`}
             fill
-            className="object-contain"
+            className="object-contain object-center select-none pointer-events-none"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={isSignature}
-          />
-
-          {/* Glossy Reflection Sheen on Hover */}
-          <motion.div
-            animate={{
-              opacity: isHovered ? [0, 0.55, 0] : 0,
-              x: isHovered ? ["-100%", "200%"] : "-100%",
-            }}
-            transition={{
-              duration: 1.2,
-              repeat: isHovered ? Infinity : 0,
-              repeatDelay: 2,
-              ease: "easeInOut",
-            }}
-            className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/35 to-transparent pointer-events-none rotate-12"
           />
         </div>
       </motion.div>

@@ -97,15 +97,15 @@ export default function ProductWorldScene({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=650%",
+          end: "+=520%",
           scrub: 1,
           pin: true,
           anticipatePin: 1,
           onUpdate: (self) => {
             if (canvasRef.current) {
               const p = self.progress;
-              // Smooth non-linear progress tying scroll directly to the 80 crisp frames
-              const frameProgress = p === 1 ? 1 : 1 - Math.pow(2, -8.5 * p);
+              // Even, natural frame progression across the entire scroll length
+              const frameProgress = Math.min(1, Math.max(0, Math.pow(p, 0.94)));
               canvasRef.current.setProgress(frameProgress);
             }
           },
@@ -118,18 +118,18 @@ export default function ProductWorldScene({
           tl.to(scrollCueRef.current, { opacity: 0, duration: 0.05 }, 0.05);
         }
       } else {
-        // Stage 02 -> 03: The Flavour Wave parts as the Chip Emerges & Scales (0.00 -> 0.35)
+        // Stage 02 -> 03: The Flavour Wave parts as the Chip Emerges & Scales (0.00 -> 0.40)
         tl.fromTo(
           canvasContainerRef.current,
-          { scale: isMobile ? 0.88 : 0.84, opacity: 0.95, y: isMobile ? 20 : 35 },
-          { scale: isMobile ? 1.02 : 1.1, opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
+          { scale: isMobile ? 0.88 : 0.86, opacity: 0.95, y: isMobile ? 20 : 30 },
+          { scale: isMobile ? 1.02 : 1.08, opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
           0.0
         );
 
         // Refined silver specular glow highlights the chip
         tl.to(
           atmosphericGlowRef.current,
-          { scale: 1.25, opacity: 0.85, duration: 0.4, ease: "power2.out" },
+          { scale: 1.2, opacity: 0.8, duration: 0.38, ease: "power2.out" },
           0.05
         );
 
@@ -144,35 +144,29 @@ export default function ProductWorldScene({
 
         // Stage 04: Texture Revealed & Minimal Branding Materializes (0.35 -> 0.70)
         tl.fromTo(
-          craftBadgeRef.current,
-          { opacity: 0, y: -15 },
-          { opacity: 1, y: 0, duration: 0.15, ease: "power2.out" },
+          brandTitleRef.current,
+          { opacity: 0, scale: 0.97, y: 18 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "power3.out" },
           0.32
         )
-          .fromTo(
-            brandTitleRef.current,
-            { opacity: 0, scale: 0.96, y: 20 },
-            { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "power3.out" },
-            0.36
-          )
-          .fromTo(
-            brandSubRef.current,
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" },
-            0.42
-          );
+        .fromTo(
+          brandSubRef.current,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" },
+          0.40
+        );
 
         // Stage 05: Seamless Handoff into Scene 02 (Flavour & Texture)
         tl.to(
           brandingGroupRef.current,
-          { opacity: 0, y: -30, duration: 0.2, ease: "power2.in" },
+          { opacity: 0, y: -25, duration: 0.18, ease: "power2.in" },
           0.82
         );
 
         tl.to(
           canvasContainerRef.current,
-          { scale: 1.15, opacity: 0.3, duration: 0.2, ease: "power2.in" },
-          0.85
+          { scale: 1.12, opacity: 0.35, duration: 0.18, ease: "power2.in" },
+          0.84
         );
       }
     }, containerRef);
@@ -180,17 +174,17 @@ export default function ProductWorldScene({
     return () => ctx.revert();
   }, [isReducedMotion, isMobile, frameUrls.length]);
 
-  // Subtle Mouse Parallax on Desktop
+  // Subtle Mouse Parallax on Desktop (Subtle spatial depth)
   useEffect(() => {
     if (isReducedMotion || isMobile || !canvasContainerRef.current) return;
 
-    const xTo = gsap.quickTo(canvasContainerRef.current, "x", { duration: 0.9, ease: "power3" });
-    const yTo = gsap.quickTo(canvasContainerRef.current, "y", { duration: 0.9, ease: "power3" });
+    const xTo = gsap.quickTo(canvasContainerRef.current, "x", { duration: 0.8, ease: "power2.out" });
+    const yTo = gsap.quickTo(canvasContainerRef.current, "y", { duration: 0.8, ease: "power2.out" });
 
     const handleMouseMove = (e: MouseEvent) => {
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
       const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      const maxDisplacement = 12;
+      const maxDisplacement = 8;
       xTo(nx * -maxDisplacement);
       yTo(ny * -maxDisplacement);
     };
@@ -246,23 +240,20 @@ export default function ProductWorldScene({
         />
       </div>
 
-      {/* ================= SUPPORTING BRANDING OVERLAY (Revealed post chip arrival) ================= */}
+      {/* ================= SUPPORTING BRANDING OVERLAY ================= */}
       <div
         ref={brandingGroupRef}
         className="absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-12 md:p-16 pointer-events-none"
       >
         {/* Top Indicator Row */}
         <div className="flex items-start justify-between w-full pt-16 md:pt-12">
-          <div ref={craftBadgeRef} className="opacity-0 flex flex-col gap-1">
-            <span className="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-[#C7CBD1] font-bold font-mono">
-              01 / The Flavour Wave
-            </span>
-            <span className="text-[10px] tracking-[0.2em] text-[#858B94] uppercase font-mono font-semibold">
+          <div ref={craftBadgeRef} className="opacity-90 flex flex-col gap-1">
+            <span className="text-[10px] tracking-[0.25em] text-[#C7CBD1] uppercase font-mono font-bold">
               Hand-Cooked Kettle Crisps
             </span>
           </div>
 
-          <div className="opacity-0 hidden sm:flex items-center gap-3 px-4 py-2 rounded-full border border-[#C7CBD1]/20 bg-[#181B20]/80 backdrop-blur-md shadow-sm">
+          <div className="opacity-90 hidden sm:flex items-center gap-3 px-4 py-2 rounded-full border border-[#C7CBD1]/20 bg-[#181B20]/80 backdrop-blur-md shadow-sm">
             <span className="w-2 h-2 rounded-full bg-[#E5A855]" />
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#C7CBD1] font-bold">
               Pure Sunflower Oil
@@ -290,7 +281,7 @@ export default function ProductWorldScene({
         {/* Bottom Metadata & Initial Scroll Direction */}
         <div className="flex items-end justify-between w-full pb-4">
           <div className="text-[10px] tracking-[0.25em] uppercase text-[#858B94] font-mono font-medium hidden sm:block">
-            Artisan Quality Verified — 9 Unique Flavours
+            Artisan Verified Flavours
           </div>
 
           {/* Initial Scroll Cue */}
@@ -299,7 +290,7 @@ export default function ProductWorldScene({
             className="flex items-center gap-3 ml-auto opacity-90 transition-opacity duration-300 pointer-events-none"
           >
             <span className="text-[10px] uppercase tracking-[0.3em] text-[#C7CBD1] font-mono font-bold">
-              Scroll To Journey
+              Scroll to Journal
             </span>
             <div className="w-8 h-[1.5px] bg-gradient-to-r from-[#C7CBD1] to-transparent" />
           </div>

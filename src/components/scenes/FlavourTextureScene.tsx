@@ -1,62 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import { products } from "@/data/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// The 3 supplied signature product packets in exact required sequence:
-// 01 — RED PACKET (Classic Tomato / Archer & Finch)
-// 02 — ORANGE PACKET (Spicy Masala / Artisan Crisps)
-// 03 — BLACK PACKET (Truffle Cheese / Golden Harvest Luxury Pack)
-const threePacks = [
-  {
-    ...(products.find((p) => p.slug === "classic-tomato") || products[0]),
-    image: "/images/anatomy_red.png",
-  },
-  {
-    ...(products.find((p) => p.slug === "spicy-masala") || products[1]),
-    image: "/images/anatomy_orange.png",
-  },
-  {
-    ...(products.find((p) => p.slug === "truffle-cheese") || products[2]),
-    image: "/images/anatomy_black.png",
-  },
+// Flavor Themes matching the 15 signature products
+const flavourThemes = [
+  { slug: "andhra-murukku", name: "Andhra Murukku", bg: "#140e04", glow: "rgba(234, 179, 8, 0.35)", spotlightGlow: "rgba(234, 179, 8, 0.55)", accent: "#EAB308" },
+  { slug: "banana-chips", name: "Banana Chips", bg: "#161303", glow: "rgba(250, 204, 21, 0.38)", spotlightGlow: "rgba(250, 204, 21, 0.60)", accent: "#FACC15" },
+  { slug: "dal-mixture", name: "Dal Mixture", bg: "#140f03", glow: "rgba(202, 138, 4, 0.35)", spotlightGlow: "rgba(202, 138, 4, 0.55)", accent: "#CA8A04" },
+  { slug: "garlic-murukku", name: "Garlic Murukku", bg: "#03121b", glow: "rgba(56, 189, 248, 0.35)", spotlightGlow: "rgba(56, 189, 248, 0.55)", accent: "#38BDF8" },
+  { slug: "jackfruit-chips", name: "Jackfruit Chips", bg: "#170c03", glow: "rgba(249, 115, 22, 0.35)", spotlightGlow: "rgba(249, 115, 22, 0.55)", accent: "#FB923C" },
+  { slug: "kara-seva", name: "Kara Seva", bg: "#140d04", glow: "rgba(217, 119, 6, 0.35)", spotlightGlow: "rgba(217, 119, 6, 0.55)", accent: "#D97706" },
+  { slug: "kerala-mixture", name: "Kerala Mixture", bg: "#180505", glow: "rgba(239, 68, 68, 0.38)", spotlightGlow: "rgba(239, 68, 68, 0.58)", accent: "#EF4444" },
+  { slug: "masala-murukku", name: "Masala Murukku", bg: "#18040a", glow: "rgba(244, 63, 94, 0.36)", spotlightGlow: "rgba(244, 63, 94, 0.55)", accent: "#F43F5E" },
+  { slug: "palak-murukku", name: "Palak Murukku", bg: "#03170a", glow: "rgba(34, 197, 94, 0.35)", spotlightGlow: "rgba(34, 197, 94, 0.55)", accent: "#22C55E" },
+  { slug: "peanut-masala", name: "Peanut Masala", bg: "#170505", glow: "rgba(239, 68, 68, 0.38)", spotlightGlow: "rgba(239, 68, 68, 0.58)", accent: "#EF4444" },
+  { slug: "peanut-roast", name: "Peanut Roast", bg: "#04121a", glow: "rgba(56, 189, 248, 0.35)", spotlightGlow: "rgba(56, 189, 248, 0.55)", accent: "#38BDF8" },
+  { slug: "ring-murukku", name: "Ring Murukku", bg: "#151203", glow: "rgba(234, 179, 8, 0.35)", spotlightGlow: "rgba(234, 179, 8, 0.55)", accent: "#EAB308" },
+  { slug: "sesame-ball", name: "Sesame Ball", bg: "#0f061c", glow: "rgba(167, 139, 250, 0.35)", spotlightGlow: "rgba(167, 139, 250, 0.55)", accent: "#A78BFA" },
+  { slug: "tapioca-chips", name: "Tapioca Chips", bg: "#03121b", glow: "rgba(56, 189, 248, 0.35)", spotlightGlow: "rgba(56, 189, 248, 0.55)", accent: "#38BDF8" },
+  { slug: "tomato-murukku", name: "Tomato Murukku", bg: "#18040a", glow: "rgba(244, 63, 94, 0.36)", spotlightGlow: "rgba(244, 63, 94, 0.55)", accent: "#F43F5E" },
 ];
+
+const anatomyProducts = products.map((p, idx) => ({
+  slug: p.slug,
+  name: p.name,
+  image: p.image,
+  botanical: p.ingredients.slice(0, 3).join(", "),
+  nutrition: {
+    calories: p.nutrition.calories,
+    fat: p.nutrition.fat,
+    protein: p.nutrition.protein,
+  },
+  theme: flavourThemes[idx] || flavourThemes[0],
+}));
 
 export default function FlavourTextureScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stage3dRef = useRef<HTMLDivElement>(null);
-  const redPackRef = useRef<HTMLDivElement>(null);
-  const orangePackRef = useRef<HTMLDivElement>(null);
-  const blackPackRef = useRef<HTMLDivElement>(null);
-  const redGlowRef = useRef<HTMLDivElement>(null);
-  const orangeGlowRef = useRef<HTMLDivElement>(null);
-  const silverGlowRef = useRef<HTMLDivElement>(null);
-  const redSectionBgRef = useRef<HTMLDivElement>(null);
-  const orangeSectionBgRef = useRef<HTMLDivElement>(null);
-  const silverSectionBgRef = useRef<HTMLDivElement>(null);
-  const chipsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const chipFgRef = useRef<HTMLDivElement>(null);
-  const chipMgRef = useRef<HTMLDivElement>(null);
-  const chipBgRef = useRef<HTMLDivElement>(null);
+  const packRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const spotlightGlowRef = useRef<HTMLDivElement>(null);
+  const bgAmbientRef = useRef<HTMLDivElement>(null);
 
   const headingGroupRef = useRef<HTMLDivElement>(null);
   const ingredientNodesRef = useRef<HTMLDivElement>(null);
-  const textureMetricsRef = useRef<HTMLDivElement>(null);
 
   const [activeFlavourIndex, setActiveFlavourIndex] = useState(0);
-
-  const [isReducedMotion, setIsReducedMotion] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    }
-    return false;
-  });
 
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
@@ -66,810 +61,318 @@ export default function FlavourTextureScene() {
   });
 
   useEffect(() => {
-    const motionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobileMq = window.matchMedia("(max-width: 768px)");
-
-    const onMotionChange = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     const onMobileChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-
-    motionMq.addEventListener("change", onMotionChange);
     mobileMq.addEventListener("change", onMobileChange);
-
-    return () => {
-      motionMq.removeEventListener("change", onMotionChange);
-      mobileMq.removeEventListener("change", onMobileChange);
-    };
+    return () => mobileMq.removeEventListener("change", onMobileChange);
   }, []);
 
-  // 3D Scroll-Driven Product Timeline
+  // 3D Circular Ring Rotation & Scroll-Driven Center Spotlight Engine
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "+=450%",
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            const p = self.progress;
-            // 3-phase live product data mapping:
-            // 0.00 -> 0.40: Red Packet (Classic Tomato)
-            // 0.40 -> 0.72: Orange Packet (Spicy Masala)
-            // 0.72 -> 1.00: Black Packet (Truffle Cheese)
-            let idx = 0;
-            if (p >= 0.72) {
-              idx = 2;
-            } else if (p >= 0.4) {
-              idx = 1;
-            } else {
-              idx = 0;
-            }
-            setActiveFlavourIndex(idx);
-          },
-        },
-      });
+      const N = anatomyProducts.length; // 15 packets
+      const STEP_DEG = 360 / N; // 24 degrees per step
 
-      if (isReducedMotion) {
-        // Reduced motion: simple graceful cross-fades
-        tl.to(headingGroupRef.current, { opacity: 1, duration: 0.1 }, 0)
-          .to(ingredientNodesRef.current, { opacity: 1, duration: 0.1 }, 0)
-          .to(textureMetricsRef.current, { opacity: 1, duration: 0.1 }, 0)
-          .to(redSectionBgRef.current, { opacity: 1, duration: 0.3 }, 0)
-          .to(redGlowRef.current, { opacity: 1, duration: 0.3 }, 0)
-          .to(redPackRef.current, { opacity: 1, duration: 0.3 }, 0)
-          .to(redSectionBgRef.current, { opacity: 0, duration: 0.1 }, 0.35)
-          .to(redGlowRef.current, { opacity: 0, duration: 0.1 }, 0.35)
-          .to(redPackRef.current, { opacity: 0, duration: 0.1 }, 0.35)
-          .to(orangeSectionBgRef.current, { opacity: 1, duration: 0.3 }, 0.4)
-          .to(orangeGlowRef.current, { opacity: 1, duration: 0.3 }, 0.4)
-          .to(orangePackRef.current, { opacity: 1, duration: 0.3 }, 0.4)
-          .to(orangeSectionBgRef.current, { opacity: 0, duration: 0.1 }, 0.7)
-          .to(orangeGlowRef.current, { opacity: 0, duration: 0.1 }, 0.7)
-          .to(orangePackRef.current, { opacity: 0, duration: 0.1 }, 0.7)
-          .to(silverSectionBgRef.current, { opacity: 1, duration: 0.3 }, 0.75)
-          .to(silverGlowRef.current, { opacity: 1, duration: 0.3 }, 0.75)
-          .to(blackPackRef.current, { opacity: 1, duration: 0.3 }, 0.75);
+      // Function to position all 15 packets along the 3D circular ring and interpolate active packet to spotlight
+      const renderRingLayout = (progress: number) => {
+        // Continuous step from 0 to N - 1
+        const currentStep = progress * (N - 1);
+        const activeIdx = Math.min(Math.max(Math.round(currentStep), 0), N - 1);
+        setActiveFlavourIndex(activeIdx);
 
-        chipsRef.current.forEach((c) => {
-          if (c) {
-            tl.to(c, { opacity: 0.85, duration: 0.3 }, 0)
-              .to(c, { opacity: 0, duration: 0.1 }, 0.92);
-          }
-        });
-      } else {
-        // Step 1: Heading Entrance
-        tl.fromTo(
-          headingGroupRef.current,
-          { opacity: 0, y: -40 },
-          { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" },
-          0.02
-        );
-
-        // Step 2: Layered Spatial Ingredient Node Reveal — Single Combined Card Framing Product
-        if (ingredientNodesRef.current) {
-          tl.fromTo(
-            ingredientNodesRef.current,
-            { opacity: 0, scale: 0.9, y: 15 },
-            { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power2.out" },
-            0.08
-          );
-
-          tl.to(
-            ingredientNodesRef.current,
-            { x: isMobile ? 0 : 12, y: isMobile ? 0 : -8, duration: 0.6, ease: "none" },
-            0.25
-          );
+        // Dynamic theme background & spotlight glow interpolation
+        const currentTheme = anatomyProducts[activeIdx]?.theme || flavourThemes[0];
+        if (container) {
+          container.style.backgroundColor = currentTheme.bg;
+        }
+        if (bgAmbientRef.current) {
+          bgAmbientRef.current.style.background = `radial-gradient(ellipse at 50% 50%, ${currentTheme.glow} 0%, transparent 68%)`;
+        }
+        if (spotlightGlowRef.current) {
+          spotlightGlowRef.current.style.background = `radial-gradient(circle at center, ${currentTheme.spotlightGlow} 0%, transparent 70%)`;
         }
 
-        // Texture Metrics Entrance
-        tl.fromTo(
-          textureMetricsRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.15, ease: "power2.out" },
-          0.1
-        );
+        // Geometry radii for the 3D circular ring orbit
+        const rx = isMobile ? 180 : 380; // Horizontal circle radius
+        const ry = isMobile ? 65 : 120;  // Vertical perspective radius (tilted ellipse)
+        const rz = isMobile ? 120 : 220; // 3D depth radius
 
-        // ================= 3D PRODUCT 01 — RED PACKET + 5 FLOATING CHIPS =================
-        // Starts in depth -> approaches camera -> rotates in 3D -> reaches focal plane -> exits
-        tl.fromTo(
-          redSectionBgRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.28, ease: "power2.out" },
-          0.04
-        );
+        anatomyProducts.forEach((_, i) => {
+          const el = packRefs.current[i];
+          if (!el) return;
 
-        tl.fromTo(
-          redGlowRef.current,
-          { opacity: 0, scale: 0.75 },
-          { opacity: 1, scale: 1, duration: 0.28, ease: "power2.out" },
-          0.04
-        );
+          // Angular difference in steps from current scroll position
+          const stepDelta = i - currentStep;
+          const absStepDelta = Math.abs(stepDelta);
 
-        // 5 Floating 3D Chips entrance for Red Packet
-        if (chipsRef.current[0]) tl.fromTo(chipsRef.current[0], { opacity: 0, scale: 0.5, z: -140, rotateX: 30, rotateY: -35, rotateZ: -20, y: 30 }, { opacity: 1, scale: 1, z: 45, rotateX: 16, rotateY: -18, rotateZ: -10, y: 0, duration: 0.28, ease: "power2.out" }, 0.04);
-        if (chipsRef.current[1]) tl.fromTo(chipsRef.current[1], { opacity: 0, scale: 0.5, z: -160, rotateX: -25, rotateY: 35, rotateZ: 20, y: 30 }, { opacity: 1, scale: 0.95, z: -20, rotateX: -12, rotateY: 22, rotateZ: 14, y: 0, duration: 0.28, ease: "power2.out" }, 0.04);
-        if (chipsRef.current[2]) tl.fromTo(chipsRef.current[2], { opacity: 0, scale: 0.5, z: -180, rotateX: 30, rotateY: -25, rotateZ: 35, y: 30 }, { opacity: 1, scale: 0.9, z: -45, rotateX: 18, rotateY: -12, rotateZ: 28, y: 0, duration: 0.28, ease: "power2.out" }, 0.04);
-        if (chipsRef.current[3]) tl.fromTo(chipsRef.current[3], { opacity: 0, scale: 0.6, z: -100, rotateX: -35, rotateY: 25, rotateZ: -25, y: 30 }, { opacity: 1, scale: 1.05, z: 65, rotateX: -18, rotateY: 12, rotateZ: -16, y: 0, duration: 0.28, ease: "power2.out" }, 0.04);
-        if (chipsRef.current[4]) tl.fromTo(chipsRef.current[4], { opacity: 0, scale: 0.5, z: -150, rotateX: 20, rotateY: -40, rotateZ: 15, y: 30 }, { opacity: 1, scale: 0.92, z: 15, rotateX: 10, rotateY: -25, rotateZ: 8, y: 0, duration: 0.28, ease: "power2.out" }, 0.04);
+          // Angle on the 360 ring (24 deg per packet)
+          const angleDeg = stepDelta * STEP_DEG;
+          const angleRad = (angleDeg * Math.PI) / 180;
 
-        tl.fromTo(
-          redPackRef.current,
-          {
-            opacity: 0,
-            scale: 0.62,
-            z: -250,
-            y: 35,
-            rotateX: 18,
-            rotateY: isMobile ? -8 : -18,
-            rotateZ: -4,
+          // Ring 3D coordinates
+          const xRing = rx * Math.sin(angleRad);
+          const yRing = -ry * Math.cos(angleRad) + (isMobile ? 10 : 20);
+          const zRing = -rz * (1 - Math.cos(angleRad));
+
+          // Active focus transition: when close to center (absStepDelta < 1.0)
+          // Smooth transition from ring position into center spotlight (0, 0, 0)
+          const focusT = Math.max(0, 1 - absStepDelta);
+          // Smoothstep curve for silky fluid glide
+          const s = focusT * focusT * (3 - 2 * focusT);
+
+          // Interpolated 3D coordinates
+          const x = xRing * (1 - s);
+          const y = yRing * (1 - s);
+          const z = zRing * (1 - s) + (isMobile ? 40 : 80) * s;
+
+          // Scale: 14 outer ring packets are smaller (0.46x - 0.52x), center active scales cleanly (1.22x)
+          const ringScale = isMobile ? 0.42 : 0.50;
+          const activeScale = isMobile ? 1.05 : 1.22;
+          const scale = ringScale * (1 - s) + activeScale * s;
+
+          // Opacity: outer ring packets semi-transparent (0.40 - 0.65), active center full opacity (1.0)
+          const depthFactor = (Math.cos(angleRad) + 1) / 2; // 1 at front, 0 at back
+          const ringOpacity = 0.35 + depthFactor * 0.35;
+          const opacity = ringOpacity * (1 - s) + 1.0 * s;
+
+          // Angle alignment along the curve of the circle
+          const rotY = (angleDeg * 0.42) * (1 - s);
+          const rotZ = (Math.sin(angleRad) * -7) * (1 - s);
+
+          // Realistic shadow & spotlight glow
+          const shadowBlur = Math.round(15 + s * 40);
+          const shadowSpread = Math.round(8 + s * 20);
+          const shadowAlpha = 0.5 + s * 0.45;
+          const brightness = 0.75 + s * 0.45;
+
+          // Z-index: Active packet always on top
+          const zIndex = s > 0.35 ? 50 : Math.round(10 + depthFactor * 20);
+
+          el.style.opacity = `${opacity}`;
+          el.style.zIndex = `${zIndex}`;
+          el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`;
+          el.style.filter = `brightness(${brightness}) drop-shadow(0 ${shadowSpread}px ${shadowBlur}px rgba(0,0,0,${shadowAlpha}))`;
+          el.style.pointerEvents = s > 0.4 ? "auto" : "none";
+        });
+      };
+
+      // Header entrance animation
+      gsap.fromTo(
+        headingGroupRef.current,
+        { opacity: 0, y: -25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: container,
+            start: "top 80%",
           },
+        }
+      );
+
+      // Ingredient Card Entrance
+      if (ingredientNodesRef.current) {
+        gsap.fromTo(
+          ingredientNodesRef.current,
+          { opacity: 0, scale: 0.96, y: 15 },
           {
             opacity: 1,
-            scale: 0.90,
-            z: 25,
+            scale: 1,
             y: 0,
-            rotateX: -2,
-            rotateY: isMobile ? 2 : 4,
-            rotateZ: 0,
-            duration: 0.28,
+            duration: 0.7,
             ease: "power2.out",
-          },
-          0.04
-        );
-
-        tl.to(
-          redSectionBgRef.current,
-          { opacity: 0, duration: 0.16, ease: "power2.in" },
-          0.34
-        );
-
-        tl.to(
-          redGlowRef.current,
-          { opacity: 0, scale: 1.08, duration: 0.16, ease: "power2.in" },
-          0.34
-        );
-
-        // Exit Red Chips
-        chipsRef.current.forEach((c) => {
-          if (c) tl.to(c, { opacity: 0, scale: 1.1, z: 100, y: -35, duration: 0.16, ease: "power2.in" }, 0.34);
-        });
-
-        tl.to(
-          redPackRef.current,
-          {
-            opacity: 0,
-            scale: 1.02,
-            z: 120,
-            y: -40,
-            rotateX: -12,
-            rotateY: isMobile ? 6 : 14,
-            duration: 0.16,
-            ease: "power2.in",
-          },
-          0.34
-        );
-
-        // ================= 3D PRODUCT 02 — ORANGE PACKET + 5 FLOATING CHIPS =================
-        // Emerges from depth -> moves forward -> rotates in 3D -> focal plane hero -> exits
-        tl.fromTo(
-          orangeSectionBgRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.28, ease: "power2.out" },
-          0.38
-        );
-
-        tl.fromTo(
-          orangeGlowRef.current,
-          { opacity: 0, scale: 0.75 },
-          { opacity: 1, scale: 1, duration: 0.28, ease: "power2.out" },
-          0.38
-        );
-
-        // 5 Floating 3D Chips entrance for Orange Packet
-        if (chipsRef.current[0]) tl.fromTo(chipsRef.current[0], { opacity: 0, scale: 0.6, z: -160, rotateX: -20, rotateY: 30, y: 35 }, { opacity: 1, scale: 0.96, z: 35, rotateX: -14, rotateY: 20, rotateZ: -8, y: 0, duration: 0.28, ease: "power2.out" }, 0.38);
-        if (chipsRef.current[1]) tl.fromTo(chipsRef.current[1], { opacity: 0, scale: 0.5, z: -150, rotateX: 30, rotateY: -30, y: 35 }, { opacity: 1, scale: 1, z: -15, rotateX: 16, rotateY: -18, rotateZ: 12, y: 0, duration: 0.28, ease: "power2.out" }, 0.38);
-        if (chipsRef.current[2]) tl.fromTo(chipsRef.current[2], { opacity: 0, scale: 0.5, z: -170, rotateX: -25, rotateY: 20, y: 35 }, { opacity: 1, scale: 0.92, z: -35, rotateX: -15, rotateY: 16, rotateZ: 22, y: 0, duration: 0.28, ease: "power2.out" }, 0.38);
-        if (chipsRef.current[3]) tl.fromTo(chipsRef.current[3], { opacity: 0, scale: 0.6, z: -110, rotateX: 25, rotateY: -18, y: 35 }, { opacity: 1, scale: 1.08, z: 55, rotateX: 15, rotateY: -12, rotateZ: -14, y: 0, duration: 0.28, ease: "power2.out" }, 0.38);
-        if (chipsRef.current[4]) tl.fromTo(chipsRef.current[4], { opacity: 0, scale: 0.5, z: -160, rotateX: -15, rotateY: 35, y: 35 }, { opacity: 1, scale: 0.9, z: 20, rotateX: -8, rotateY: 22, rotateZ: 6, y: 0, duration: 0.28, ease: "power2.out" }, 0.38);
-
-        tl.fromTo(
-          orangePackRef.current,
-          {
-            opacity: 0,
-            scale: 0.58,
-            z: -280,
-            y: 40,
-            rotateX: -12,
-            rotateY: isMobile ? 8 : 20,
-            rotateZ: 5,
-          },
-          {
-            opacity: 1,
-            scale: 0.90,
-            z: 25,
-            y: 0,
-            rotateX: 2,
-            rotateY: isMobile ? -2 : -4,
-            rotateZ: 0,
-            duration: 0.28,
-            ease: "power2.out",
-          },
-          0.38
-        );
-
-        tl.to(
-          orangeSectionBgRef.current,
-          { opacity: 0, duration: 0.16, ease: "power2.in" },
-          0.66
-        );
-
-        tl.to(
-          orangeGlowRef.current,
-          { opacity: 0, scale: 1.08, duration: 0.16, ease: "power2.in" },
-          0.66
-        );
-
-        // Exit Orange Chips
-        chipsRef.current.forEach((c) => {
-          if (c) tl.to(c, { opacity: 0, scale: 1.1, z: 100, y: -35, duration: 0.16, ease: "power2.in" }, 0.66);
-        });
-
-        tl.to(
-          orangePackRef.current,
-          {
-            opacity: 0,
-            scale: 1.02,
-            z: 120,
-            y: -40,
-            rotateX: -12,
-            rotateY: isMobile ? -6 : -14,
-            duration: 0.16,
-            ease: "power2.in",
-          },
-          0.66
-        );
-
-        // ================= 3D PRODUCT 03 — BLACK PACKET + 5 FLOATING CHIPS =================
-        // Emerges from depth -> moves forward -> rotates subtly -> settles as final hero
-        tl.fromTo(
-          silverSectionBgRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.26, ease: "power2.out" },
-          0.7
-        );
-
-        tl.fromTo(
-          silverGlowRef.current,
-          { opacity: 0, scale: 0.75 },
-          { opacity: 1, scale: 1, duration: 0.26, ease: "power2.out" },
-          0.7
-        );
-
-        // 5 Floating 3D Chips entrance for Black Packet
-        if (chipsRef.current[0]) tl.fromTo(chipsRef.current[0], { opacity: 0, scale: 0.6, z: -160, rotateX: 18, rotateY: -25, y: 30 }, { opacity: 1, scale: 1, z: 40, rotateX: 10, rotateY: -14, rotateZ: -6, y: 0, duration: 0.26, ease: "power2.out" }, 0.70);
-        if (chipsRef.current[1]) tl.fromTo(chipsRef.current[1], { opacity: 0, scale: 0.5, z: -150, rotateX: -20, rotateY: 25, y: 30 }, { opacity: 1, scale: 0.95, z: -25, rotateX: -10, rotateY: 18, rotateZ: 10, y: 0, duration: 0.26, ease: "power2.out" }, 0.70);
-        if (chipsRef.current[2]) tl.fromTo(chipsRef.current[2], { opacity: 0, scale: 0.5, z: -170, rotateX: 25, rotateY: -16, y: 30 }, { opacity: 1, scale: 0.9, z: -40, rotateX: 14, rotateY: -10, rotateZ: 20, y: 0, duration: 0.26, ease: "power2.out" }, 0.70);
-        if (chipsRef.current[3]) tl.fromTo(chipsRef.current[3], { opacity: 0, scale: 0.6, z: -100, rotateX: -25, rotateY: 20, y: 30 }, { opacity: 1, scale: 1.05, z: 50, rotateX: -12, rotateY: 10, rotateZ: -12, y: 0, duration: 0.26, ease: "power2.out" }, 0.70);
-        if (chipsRef.current[4]) tl.fromTo(chipsRef.current[4], { opacity: 0, scale: 0.5, z: -150, rotateX: 12, rotateY: -30, y: 30 }, { opacity: 1, scale: 0.92, z: 15, rotateX: 6, rotateY: -20, rotateZ: 5, y: 0, duration: 0.26, ease: "power2.out" }, 0.70);
-
-        tl.fromTo(
-          blackPackRef.current,
-          {
-            opacity: 0,
-            scale: 0.58,
-            z: -280,
-            y: 40,
-            rotateX: 14,
-            rotateY: isMobile ? -8 : -16,
-            rotateZ: -3,
-          },
-          {
-            opacity: 1,
-            scale: 0.90,
-            z: 25,
-            y: 0,
-            rotateX: 0,
-            rotateY: 0,
-            rotateZ: 0,
-            duration: 0.26,
-            ease: "power2.out",
-          },
-          0.7
-        );
-
-        // Final scene exit transition to Collection
-        tl.to(
-          [headingGroupRef.current, ingredientNodesRef.current, textureMetricsRef.current],
-          { opacity: 0, y: -40, duration: 0.12, ease: "power2.in" },
-          0.92
-        );
-
-        tl.to(
-          [silverSectionBgRef.current, silverGlowRef.current],
-          { opacity: 0, duration: 0.12, ease: "power2.in" },
-          0.92
-        );
-
-        // Exit Black Chips
-        chipsRef.current.forEach((c) => {
-          if (c) tl.to(c, { opacity: 0, scale: 1.15, duration: 0.12, ease: "power2.in" }, 0.92);
-        });
-
-        tl.to(
-          blackPackRef.current,
-          { scale: 1.12, opacity: 0.25, duration: 0.12, ease: "power2.in" },
-          0.92
+            scrollTrigger: {
+              trigger: container,
+              start: "top 70%",
+            },
+          }
         );
       }
-    }, containerRef);
+
+      // Initial render pass
+      renderRingLayout(0);
+
+      // ScrollTrigger locking scroll to smooth 3D circular ring rotation
+      ScrollTrigger.create({
+        trigger: container,
+        start: "top top",
+        end: `+=${N * 95}%`, // Responsive balanced scroll length
+        pin: true,
+        scrub: 0.9,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          renderRingLayout(self.progress);
+        },
+      });
+    }, container);
 
     return () => ctx.revert();
-  }, [isReducedMotion, isMobile]);
+  }, [isMobile]);
 
-  // Multi-Layer Shallow 3D Depth Mouse Parallax with Arc Rotation for Floating Chips
-  useEffect(() => {
-    if (isReducedMotion || isMobile || !containerRef.current) return;
+  const activeProduct = anatomyProducts[activeFlavourIndex] || anatomyProducts[0];
 
-    const fgXTo = chipFgRef.current
-      ? gsap.quickTo(chipFgRef.current, "x", { duration: 0.6, ease: "power2.out" })
-      : null;
-    const fgYTo = chipFgRef.current
-      ? gsap.quickTo(chipFgRef.current, "y", { duration: 0.6, ease: "power2.out" })
-      : null;
-    const fgRotZTo = chipFgRef.current
-      ? gsap.quickTo(chipFgRef.current, "rotateZ", { duration: 0.6, ease: "power2.out" })
-      : null;
-    const fgRotYTo = chipFgRef.current
-      ? gsap.quickTo(chipFgRef.current, "rotateY", { duration: 0.6, ease: "power2.out" })
-      : null;
-    const fgRotXTo = chipFgRef.current
-      ? gsap.quickTo(chipFgRef.current, "rotateX", { duration: 0.6, ease: "power2.out" })
-      : null;
-
-    const mgXTo = chipMgRef.current
-      ? gsap.quickTo(chipMgRef.current, "x", { duration: 0.7, ease: "power2.out" })
-      : null;
-    const mgYTo = chipMgRef.current
-      ? gsap.quickTo(chipMgRef.current, "y", { duration: 0.7, ease: "power2.out" })
-      : null;
-    const mgRotZTo = chipMgRef.current
-      ? gsap.quickTo(chipMgRef.current, "rotateZ", { duration: 0.7, ease: "power2.out" })
-      : null;
-    const mgRotYTo = chipMgRef.current
-      ? gsap.quickTo(chipMgRef.current, "rotateY", { duration: 0.7, ease: "power2.out" })
-      : null;
-    const mgRotXTo = chipMgRef.current
-      ? gsap.quickTo(chipMgRef.current, "rotateX", { duration: 0.7, ease: "power2.out" })
-      : null;
-
-    const bgXTo = chipBgRef.current
-      ? gsap.quickTo(chipBgRef.current, "x", { duration: 0.8, ease: "power2.out" })
-      : null;
-    const bgYTo = chipBgRef.current
-      ? gsap.quickTo(chipBgRef.current, "y", { duration: 0.8, ease: "power2.out" })
-      : null;
-    const bgRotZTo = chipBgRef.current
-      ? gsap.quickTo(chipBgRef.current, "rotateZ", { duration: 0.8, ease: "power2.out" })
-      : null;
-    const bgRotYTo = chipBgRef.current
-      ? gsap.quickTo(chipBgRef.current, "rotateY", { duration: 0.8, ease: "power2.out" })
-      : null;
-    const bgRotXTo = chipBgRef.current
-      ? gsap.quickTo(chipBgRef.current, "rotateX", { duration: 0.8, ease: "power2.out" })
-      : null;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-
-      // Foreground Layer: Translation (±20px/±14px) + Arc Rotation (±8° roll, ±10° yaw, ±6° pitch)
-      if (fgXTo && fgYTo) {
-        fgXTo(nx * 20);
-        fgYTo(ny * 14);
-      }
-      if (fgRotZTo && fgRotYTo && fgRotXTo) {
-        fgRotZTo(nx * 8);
-        fgRotYTo(nx * 10);
-        fgRotXTo(-ny * 6);
-      }
-
-      // Midground Layer: Translation (±14px/±9px) + Arc Rotation (±5° roll, ±7° yaw, ±4° pitch)
-      if (mgXTo && mgYTo) {
-        mgXTo(nx * 14);
-        mgYTo(ny * 9);
-      }
-      if (mgRotZTo && mgRotYTo && mgRotXTo) {
-        mgRotZTo(nx * 5);
-        mgRotYTo(nx * 7);
-        mgRotXTo(-ny * 4);
-      }
-
-      // Background Layer: Translation (±8px/±5px) + Arc Rotation (±3° roll, ±4° yaw, ±3° pitch)
-      if (bgXTo && bgYTo) {
-        bgXTo(nx * 8);
-        bgYTo(ny * 5);
-      }
-      if (bgRotZTo && bgRotYTo && bgRotXTo) {
-        bgRotZTo(nx * 3);
-        bgRotYTo(nx * 4);
-        bgRotXTo(-ny * 3);
-      }
-    };
-
-    const handleMouseLeave = () => {
-      // Smoothly return all chip layers to neutral (0, 0, 0, 0, 0) on mouse exit
-      if (fgXTo && fgYTo && fgRotZTo && fgRotYTo && fgRotXTo) {
-        fgXTo(0);
-        fgYTo(0);
-        fgRotZTo(0);
-        fgRotYTo(0);
-        fgRotXTo(0);
-      }
-      if (mgXTo && mgYTo && mgRotZTo && mgRotYTo && mgRotXTo) {
-        mgXTo(0);
-        mgYTo(0);
-        mgRotZTo(0);
-        mgRotYTo(0);
-        mgRotXTo(0);
-      }
-      if (bgXTo && bgYTo && bgRotZTo && bgRotYTo && bgRotXTo) {
-        bgXTo(0);
-        bgYTo(0);
-        bgRotZTo(0);
-        bgRotYTo(0);
-        bgRotXTo(0);
-      }
-    };
-
-    const container = containerRef.current;
-    window.addEventListener("mousemove", handleMouseMove);
-    if (container) {
-      container.addEventListener("mouseleave", handleMouseLeave);
+  const handleJumpToCollection = useCallback(() => {
+    const el = document.getElementById("collection");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
     }
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (container) {
-        container.removeEventListener("mouseleave", handleMouseLeave);
-      }
-    };
-  }, [isReducedMotion, isMobile]);
-
-  const activeProduct = threePacks[activeFlavourIndex] || threePacks[0];
+  }, []);
 
   return (
     <section
       ref={containerRef}
       id="flavours"
-      className="h-screen w-full relative bg-[#0B0C0E] overflow-hidden text-[#F2F2F0] select-none"
+      className="h-screen w-full relative bg-[#140e04] overflow-hidden text-[#F2F2F0] select-none transition-colors duration-500 ease-out"
       aria-label="La Crispo Flavour and Texture Experience"
     >
-      {/* Dark Graphite Atmosphere with Soft Ambient Specular Lighting */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(199,203,209,0.08),transparent_65%)]" />
-
-      {/* Dynamic Ambient Background Tints for Active Packets */}
-      {/* Red Background Tint for Red Packet */}
+      {/* Dynamic Ambient Background Glow */}
       <div
-        ref={redSectionBgRef}
-        className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(220,35,45,0.14)_0%,rgba(160,20,30,0.05)_50%,transparent_75%)] opacity-0 will-change-transform"
+        ref={bgAmbientRef}
+        className="absolute inset-0 pointer-events-none transition-all duration-500 ease-out will-change-transform opacity-70"
+        style={{
+          background: `radial-gradient(ellipse at 50% 50%, ${activeProduct.theme.glow} 0%, transparent 68%)`,
+        }}
       />
 
-      {/* Orange Background Tint for Orange Packet */}
-      <div
-        ref={orangeSectionBgRef}
-        className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(245,105,25,0.14)_0%,rgba(180,70,10,0.05)_50%,transparent_75%)] opacity-0 will-change-transform"
+      {/* Dark Subtle Vignette Atmosphere & Smooth Scene Blending */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_50%,transparent_35%,rgba(5,6,8,0.7)_100%)]" />
+      <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0B0C0E]/60 to-transparent pointer-events-none z-2" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0B0C0E]/60 to-transparent pointer-events-none z-2" />
+
+      {/* Decorative Circular Orbit Ring Guide Line */}
+      <div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[680px] md:w-[740px] h-[130px] sm:h-[230px] md:h-[250px] rounded-[50%] border border-white/10 pointer-events-none opacity-40 -rotate-3" 
+        style={{ boxShadow: "0 0 40px rgba(255,255,255,0.03)" }}
       />
 
-      {/* Black + Silver Background Tint for Black Packet */}
+      {/* Central Spotlight Glow Behind the Active Middle Packet */}
       <div
-        ref={silverSectionBgRef}
-        className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(200,205,215,0.12)_0%,rgba(120,125,135,0.04)_50%,transparent_75%)] opacity-0 will-change-transform"
+        ref={spotlightGlowRef}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[420px] md:w-[480px] h-[280px] sm:h-[420px] md:h-[480px] rounded-full blur-[80px] pointer-events-none transition-all duration-700 ease-out will-change-transform z-0"
+        style={{
+          background: `radial-gradient(circle at center, ${activeProduct.theme.spotlightGlow} 0%, transparent 70%)`,
+        }}
       />
 
-      <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 sm:px-12 py-8 flex flex-col justify-between">
+      <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 sm:px-12 py-6 flex flex-col justify-between">
         
         {/* Scene Header */}
         <div ref={headingGroupRef} className="pt-14 sm:pt-16 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E5A855]" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#C7CBD1] font-bold font-mono">
-                02 / Spatial Flavour & Texture
-              </span>
-            </div>
-            <h2 className="text-3xl sm:text-5xl md:text-6xl font-serif italic tracking-tight text-[#F2F2F0]">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-serif italic tracking-tight bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
               Anatomy of the Crunch
             </h2>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-[11px] uppercase tracking-[0.2em] text-[#858B94] font-mono font-medium">
-              Live Profile:
-            </span>
-            <span className="px-3.5 py-1.5 rounded-full bg-[#181B20] border border-[#C7CBD1]/30 text-[#E6E8EB] text-xs font-bold shadow-md transition-all duration-300">
-              {activeProduct.name}
+            <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.3em] text-[#E5A855] block mt-1 sm:mt-2 font-bold">
+              15 Flavours
             </span>
           </div>
         </div>
 
-        {/* Spatial Central Composition: 3D Product Stage & Spatial Ingredient Nodes */}
+        {/* 3D Circular Ring Stage: All 15 Packets orbiting around the Central Spotlight */}
         <div className="relative flex-1 flex items-center justify-center my-auto">
           
-          {/* 3D Spatial Product Stage */}
           <div
             ref={stage3dRef}
-            className="relative w-[210px] h-[315px] sm:w-[250px] sm:h-[375px] md:w-[280px] md:h-[420px] flex items-center justify-center z-10 will-change-transform"
-            style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
+            className="relative w-[180px] h-[270px] sm:w-[220px] sm:h-[330px] md:w-[260px] md:h-[390px] lg:w-[280px] lg:h-[420px] flex items-center justify-center z-10 will-change-transform"
+            style={{ perspective: "1400px", transformStyle: "preserve-3d" }}
           >
-            {/* Background Glow Layer Behind Active Packets */}
-            {/* RED GLOW — Subtle deep red (approx 10-14% opacity) for Red Packet */}
-            <div
-              ref={redGlowRef}
-              className="absolute -inset-8 sm:-inset-16 rounded-full bg-[radial-gradient(circle_at_center,rgba(220,35,45,0.14)_0%,rgba(220,35,45,0.06)_45%,transparent_70%)] blur-2xl pointer-events-none opacity-0 will-change-transform"
-            />
-
-            {/* ORANGE GLOW — Subtle warm orange (approx 10-14% opacity) for Orange Packet */}
-            <div
-              ref={orangeGlowRef}
-              className="absolute -inset-8 sm:-inset-16 rounded-full bg-[radial-gradient(circle_at_center,rgba(245,105,25,0.14)_0%,rgba(245,105,25,0.06)_45%,transparent_70%)] blur-2xl pointer-events-none opacity-0 will-change-transform"
-            />
-
-            {/* LIGHT SILVER GLOW — Subtle light silver (approx 10-12% opacity) for Black Packet */}
-            <div
-              ref={silverGlowRef}
-              className="absolute -inset-8 sm:-inset-16 rounded-full bg-[radial-gradient(circle_at_center,rgba(220,225,230,0.12)_0%,rgba(220,225,230,0.05)_45%,transparent_70%)] blur-2xl pointer-events-none opacity-0 will-change-transform"
-            />
-
-            {/* PRODUCT 01 — RED PACKET (Classic Tomato) */}
-            <div
-              ref={redPackRef}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 will-change-transform z-15"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div className="relative w-full h-full flex items-center justify-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]">
-                <Image
-                  src={threePacks[0].image}
-                  alt={threePacks[0].name}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 256px, 384px"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* PRODUCT 02 — ORANGE PACKET (Spicy Masala) */}
-            <div
-              ref={orangePackRef}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 will-change-transform z-15"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div className="relative w-full h-full flex items-center justify-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]">
-                <Image
-                  src={threePacks[1].image}
-                  alt={threePacks[1].name}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 256px, 384px"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* PRODUCT 03 — BLACK PACKET (Truffle Cheese / Black Luxury Pack) */}
-            <div
-              ref={blackPackRef}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 will-change-transform z-15"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div className="relative w-full h-full flex items-center justify-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]">
-                <Image
-                  src={threePacks[2].image}
-                  alt={threePacks[2].name}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 256px, 384px"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* 1. BACKGROUND CHIPS LAYER (Rear Depth: Weaker Parallax ±8px/±5px, Scale: Slightly Smaller, Blur: ~1px) */}
-            <div
-              ref={chipBgRef}
-              className="absolute -inset-10 sm:-inset-16 md:-inset-20 pointer-events-none flex items-center justify-center z-5 will-change-transform"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {/* Chip 3: Bottom-Right (Single Crisp — Rear Background Depth: Subtle Blur) */}
+            {/* All 15 Lays Packets in 3D Circular Ring Orbit */}
+            {anatomyProducts.map((prod, idx) => (
               <div
-                className="absolute bottom-[10%] -right-4 sm:-right-8 md:-right-10 w-12 h-12 sm:w-15 sm:h-15 md:w-18 md:h-18 scale-95"
+                key={prod.slug}
+                ref={(el) => {
+                  packRefs.current[idx] = el;
+                }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none will-change-transform transition-opacity duration-300"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div
-                  ref={(el) => { chipsRef.current[2] = el; }}
-                  className="w-full h-full opacity-0 will-change-transform drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] blur-[1px]"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  <div className={`relative w-full h-full ${isReducedMotion ? "" : "animate-[spin_26s_linear_infinite]"}`}>
-                    <Image
-                      src="/images/chip_orbit_3.png"
-                      alt="La Crispo Crisp"
-                      fill
-                      className="object-contain"
-                      sizes="75px"
-                    />
-                  </div>
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <Image
+                    src={prod.image}
+                    alt={prod.name}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 260px, (max-width: 1200px) 380px, 440px"
+                    priority={idx < 3}
+                  />
                 </div>
               </div>
-
-              {/* Chip 5: Top-Left (Curved Crisp — Rear Background Depth: Subtle Blur) */}
-              <div
-                className="absolute top-[20%] -left-8 sm:-left-12 md:-left-16 w-11 h-11 sm:w-14 sm:h-14 md:w-17 md:h-17 scale-95"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div
-                  ref={(el) => { chipsRef.current[4] = el; }}
-                  className="w-full h-full opacity-0 will-change-transform drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] blur-[1px]"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  <div className={`relative w-full h-full ${isReducedMotion ? "" : "animate-[spin_25s_linear_infinite]"}`}>
-                    <Image
-                      src="/images/chip_orbit_2.png"
-                      alt="La Crispo Crisp"
-                      fill
-                      className="object-contain"
-                      sizes="70px"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. MIDGROUND CHIPS LAYER (Mid Focal Depth: Medium Parallax ±14px/±9px, Scale: Normal, Blur: 0px / 100% Sharp) */}
-            <div
-              ref={chipMgRef}
-              className="absolute -inset-10 sm:-inset-16 md:-inset-20 pointer-events-none flex items-center justify-center z-20 will-change-transform"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {/* Chip 2: Top-Right (Curved Crisp — Focal Plane Near Packet: 100% Crisp & Sharp) */}
-              <div
-                className="absolute top-[20%] -right-8 sm:-right-12 md:-right-16 w-13 h-13 sm:w-16 sm:h-16 md:w-20 md:h-20"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div
-                  ref={(el) => { chipsRef.current[1] = el; }}
-                  className="w-full h-full opacity-0 will-change-transform drop-shadow-[0_14px_28px_rgba(0,0,0,0.85)] blur-0"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  <div className={`relative w-full h-full ${isReducedMotion ? "" : "animate-[spin_28s_linear_infinite_reverse]"}`}>
-                    <Image
-                      src="/images/chip_orbit_2.png"
-                      alt="La Crispo Crisp"
-                      fill
-                      className="object-contain"
-                      sizes="80px"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. FOREGROUND CHIPS LAYER (Front Depth: Strong Parallax ±20px/±14px, Scale: Slightly Larger, Blur: ~1.5px) */}
-            <div
-              ref={chipFgRef}
-              className="absolute -inset-10 sm:-inset-16 md:-inset-20 pointer-events-none flex items-center justify-center z-30 will-change-transform"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {/* Chip 1: Top (Ridge Cut Crisp — Foreground Depth: Slightly Larger, Soft Edge) */}
-              <div
-                className="absolute -top-3 left-1/2 -translate-x-1/2 sm:-top-6 md:-top-8 w-15 h-15 sm:w-19 sm:h-19 md:w-23 md:h-23 scale-105"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div
-                  ref={(el) => { chipsRef.current[0] = el; }}
-                  className="w-full h-full opacity-0 will-change-transform drop-shadow-[0_16px_32px_rgba(0,0,0,0.9)] blur-[1.5px]"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  <div className={`relative w-full h-full ${isReducedMotion ? "" : "animate-[spin_24s_linear_infinite]"}`}>
-                    <Image
-                      src="/images/chip_orbit_1.png"
-                      alt="La Crispo Crisp"
-                      fill
-                      className="object-contain"
-                      sizes="95px"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Chip 4: Bottom-Left (Ridge Cut Crisp — Foreground Depth: Slightly Larger, Soft Edge) */}
-              <div
-                className="absolute bottom-[10%] -left-4 sm:-left-8 md:-left-10 w-16 h-16 sm:w-21 sm:h-21 md:w-25 md:h-25 scale-105"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div
-                  ref={(el) => { chipsRef.current[3] = el; }}
-                  className="w-full h-full opacity-0 will-change-transform drop-shadow-[0_16px_32px_rgba(0,0,0,0.9)] blur-[1.5px]"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  <div className={`relative w-full h-full ${isReducedMotion ? "" : "animate-[spin_30s_linear_infinite_reverse]"}`}>
-                    <Image
-                      src="/images/chip_orbit_1.png"
-                      alt="La Crispo Crisp"
-                      fill
-                      className="object-contain"
-                      sizes="105px"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Spatial Consolidated Information Card: Botanical + Nutrition */}
-          <div
-            ref={ingredientNodesRef}
-            className="absolute inset-0 pointer-events-none z-20 flex items-center justify-end px-4 sm:px-10 md:px-16"
-          >
-            <div className="w-[220px] sm:w-[250px] md:w-[270px] pointer-events-auto p-5 sm:p-6 rounded-2xl bg-[#181B20]/90 backdrop-blur-xl border border-[#C7CBD1]/20 shadow-[0_16px_40px_rgba(0,0,0,0.7)] flex flex-col gap-3">
-              {/* Botanical Section */}
-              <div>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C7CBD1] block font-mono font-bold mb-1">
-                  Botanical
-                </span>
-                <p className="text-sm sm:text-base font-bold text-[#F2F2F0] transition-colors duration-300 leading-tight">
-                  {activeProduct.ingredients[2] || activeProduct.ingredients[0]}
-                </p>
-              </div>
-
-              {/* Minimal Divider */}
-              <div className="border-t border-[#C7CBD1]/15 my-0.5" />
-
-              {/* Nutrition Section */}
-              <div>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C7CBD1] block font-mono font-bold mb-1">
-                  Nutrition ({activeProduct.nutrition.calories} kcal)
-                </span>
-                <div className="flex items-center gap-2 text-xs font-mono text-[#E6E8EB] font-bold">
-                  <span>{activeProduct.nutrition.fat} Fat</span>
-                  <span className="text-[#858B94]">•</span>
-                  <span>{activeProduct.nutrition.protein} Prot</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Bottom Texture Specifications & Direct Route Link */}
+        {/* Spacer for bottom breathing room */}
+        <div className="h-6 sm:h-8" />
+
+      </div>
+
+      {/* Bottom Right Area: Active Focus Info Card + View Spatial Collection */}
+      <div className="absolute bottom-6 sm:bottom-10 right-6 sm:right-12 md:right-16 z-30 pointer-events-auto flex flex-col items-end gap-5 sm:gap-7">
+        {/* Spatial Information Card for Active Centered Product */}
         <div
-          ref={textureMetricsRef}
-          className="pb-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4"
+          ref={ingredientNodesRef}
+          className="w-[220px] sm:w-[250px] md:w-[270px] pointer-events-auto p-4 sm:p-5 rounded-2xl bg-[#181B20]/90 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.85)] flex flex-col gap-2.5 transition-all duration-500"
         >
-          <div className="flex items-center gap-6 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-mono text-[#858B94] font-semibold">
-            <div>
-              <span className="text-[#F2F2F0] font-bold">{activeProduct.price}</span> Price
+          {/* Flavor Counter & Name */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] uppercase tracking-[0.25em] text-[#E5A855] font-mono font-bold">
+                Active Flavour
+              </span>
+              <span className="font-mono text-[10px] text-[#A7ACB4]">
+                {String(activeFlavourIndex + 1).padStart(2, "0")} / 15
+              </span>
             </div>
-            <div>
-              <span className="text-[#F2F2F0] font-bold">{activeProduct.nutrition.calories} kcal</span> Per Serving
-            </div>
-            <div>
-              <span className="text-[#E5A855] font-bold">{activeProduct.rating} ★</span> ({activeProduct.reviews} reviews)
-            </div>
+            <p className="text-sm sm:text-base font-bold text-[#F2F2F0] transition-colors duration-300 leading-tight">
+              {activeProduct.name}
+            </p>
           </div>
 
-          <Link
-            href={`/products/${activeProduct.slug}`}
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#C7CBD1] hover:text-[#F2F2F0] transition-colors group"
-          >
-            <span>Explore {activeProduct.name}</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
+          {/* Minimal Divider */}
+          <div className="border-t border-white/10 my-0.5" />
+
+          {/* Botanical Section */}
+          <div>
+            <span className="text-[9px] uppercase tracking-[0.25em] text-[#C7CBD1] block font-mono font-bold mb-1">
+              Ingredients
+            </span>
+            <p className="text-xs sm:text-sm text-[#D1D5DB] transition-colors duration-300 leading-snug">
+              {activeProduct.botanical}
+            </p>
+          </div>
+
+          {/* Minimal Divider */}
+          <div className="border-t border-white/10 my-0.5" />
+
+          {/* Nutrition Section */}
+          <div>
+            <span className="text-[9px] uppercase tracking-[0.25em] text-[#C7CBD1] block font-mono font-bold mb-1">
+              Nutrition ({activeProduct.nutrition.calories} kcal)
+            </span>
+            <div className="flex items-center gap-2 text-xs font-mono text-[#E6E8EB] font-bold">
+              <span>{activeProduct.nutrition.fat} Fat</span>
+              <span className="text-[#858B94]">•</span>
+              <span>{activeProduct.nutrition.protein} Prot</span>
+            </div>
+          </div>
         </div>
 
+        {/* View Spatial Collection Button */}
+        <button
+          onClick={handleJumpToCollection}
+          type="button"
+          className="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-[#14161A]/95 hover:bg-[#1C2026] border border-[#C7CBD1]/30 hover:border-[#E5A855] text-[#F2F2F0] hover:text-[#E5A855] text-xs font-mono font-bold tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_10px_35px_rgba(0,0,0,0.85)] group hover:scale-105 active:scale-95 backdrop-blur-xl cursor-pointer"
+          aria-label="View Spatial Collection"
+        >
+          <span>View Spatial Collection</span>
+          <span className="text-[#E5A855] group-hover:translate-y-1 transition-transform duration-300 font-bold">↓</span>
+        </button>
       </div>
     </section>
   );

@@ -1,39 +1,80 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { name: "Flavours", href: "#flavours" },
-  { name: "Collection", href: "#collection" },
-  { name: "Craft", href: "#factory" },
-  { name: "Story", href: "#about" },
-  { name: "Journal", href: "#blog" },
+  { name: "Flavours", href: "/#flavours" },
+  { name: "Collection", href: "/products" },
+  { name: "Craft", href: "/#factory" },
+  { name: "Blog", href: "/#blog" },
+  { name: "About Us", href: "/about" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 40);
+
+      // When at top of page, stay visible
+      if (currentScrollY <= 40) {
+        if (timerRef.current) clearTimeout(timerRef.current);
+        setIsVisible(true);
+        return;
+      }
+
+      // While scrolling down/through the page, hide the header
+      setIsVisible(false);
+
+      // Reset timer: reappear after 10 seconds of no scroll activity
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = setTimeout(() => {
+        setIsVisible(true);
+      }, 10000); // 10 seconds
+    };
+
+    // Show header when mouse hovers near top edge
+    const handleMouseMove = (e: MouseEvent) => {
+      if (e.clientY < 60) {
+        setIsVisible(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   return (
     <>
-      {/* Floating Header Container */}
+      {/* Floating Header Container with Timed Scroll Auto-Hide & 10s Reappearance */}
       <header
-        className="fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-out py-4 sm:py-6 px-4 sm:px-8 pointer-events-none"
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] py-4 sm:py-6 px-4 sm:px-8 pointer-events-none ${
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-28 opacity-0"
+        }`}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
+        <div className={`max-w-7xl mx-auto flex items-center justify-between ${isVisible ? "pointer-events-auto" : "pointer-events-none"}`}>
           
-          {/* Brand Wordmark */}
+          {/* Brand Wordmark (La Crispo) */}
           <Link
             href="/"
             className="group flex items-center gap-3 px-4 py-2 rounded-full bg-[#111317]/85 backdrop-blur-xl border border-[#C7CBD1]/20 hover:border-[#E6E8EB]/50 transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
@@ -45,7 +86,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Floating Navigation Pill */}
+          {/* Desktop Floating Navigation Pill (Title Bars) */}
           <nav
             aria-label="Main Navigation"
             className={`hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all duration-500 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ${
@@ -54,18 +95,28 @@ export default function Navbar() {
                 : "bg-[#111317]/80 backdrop-blur-xl border-[#C7CBD1]/20"
             }`}
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="px-4 py-2 text-[11px] uppercase tracking-[0.25em] font-semibold text-[#A7ACB4] hover:text-[#F2F2F0] hover:bg-white/5 rounded-full transition-all duration-200"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === pathname ||
+                (link.href.startsWith("/#") && pathname === "/" && false);
+
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] font-semibold rounded-full transition-all duration-200 ${
+                    isActive
+                      ? "text-[#E5A855] bg-white/10"
+                      : "text-[#A7ACB4] hover:text-[#F2F2F0] hover:bg-white/5"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Direct CTA / Catalog Shortcut & Mobile Trigger */}
+          {/* Direct CTA / Catalog Shortcut (Product Range) & Mobile Trigger */}
           <div className="flex items-center gap-3">
             <Link
               href="/products"
@@ -117,7 +168,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="text-3xl font-serif italic text-[#F2F2F0] hover:text-[#C7CBD1] transition-colors block py-1"
+                    className="text-2xl sm:text-3xl font-serif italic text-[#F2F2F0] hover:text-[#E5A855] transition-colors block py-1"
                   >
                     {link.name}
                   </Link>
@@ -134,7 +185,7 @@ export default function Navbar() {
                 Browse Full Catalog
               </Link>
               <p className="text-[10px] uppercase tracking-[0.2em] text-[#858B94] text-center font-mono">
-                La Crispo Artisan Crisps © 2026
+                La Crispo • Hebron Group © 2026
               </p>
             </div>
           </motion.div>

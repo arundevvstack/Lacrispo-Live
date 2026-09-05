@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const stats = [
   { label: "Locally Sourced", value: "100%" },
   { label: "Crunch Factor", value: "Max" },
@@ -22,39 +24,37 @@ export default function FactorySection() {
     const stats = statsRef.current;
     if (!section || !bg || !stats) return;
 
-    // Parallax background effect
-    gsap.to(bg, {
-      yPercent: 30,
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
-    // Fade in stats
-    gsap.fromTo(
-      stats.children,
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        stagger: 0.2,
-        ease: "power3.out",
+    const ctx = gsap.context(() => {
+      // Parallax background effect
+      gsap.to(bg, {
+        yPercent: 20,
+        ease: "none",
         scrollTrigger: {
-          trigger: stats,
-          start: "top 80%",
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
         },
-      }
-    );
-
-    return () => {
-      ScrollTrigger.getAll().forEach(t => {
-        if (t.trigger === section || t.trigger === stats) t.kill();
       });
-    };
+
+      // Fade in stats
+      gsap.fromTo(
+        stats.children,
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: stats,
+            start: "top 80%",
+          },
+        }
+      );
+    }, section);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -77,7 +77,7 @@ export default function FactorySection() {
               The Craft Facility
             </span>
           </div>
-          <h2 className="text-5xl md:text-7xl font-serif italic text-[#F2F2F0]">
+          <h2 className="text-5xl md:text-7xl font-serif italic bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent inline-block">
             The Factory
           </h2>
           <p className="text-lg md:text-xl text-[#A7ACB4] font-normal leading-relaxed max-w-xl">

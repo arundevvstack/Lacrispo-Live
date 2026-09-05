@@ -34,12 +34,41 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 w-full max-w-2xl mx-auto lg:mx-0 relative aspect-square"
         >
-          {/* Subtle glowing backdrop matching the brand color if signature, else neutral */}
-          <div className={`absolute inset-0 rounded-full blur-3xl opacity-20 ${product.color ? `bg-gradient-to-b ${product.color}` : 'bg-[#EAD0A1]'}`} />
+          {/* Subtle glowing silver backdrop aura on hover */}
+          <div className="absolute inset-0 rounded-full blur-3xl opacity-20 group-hover:opacity-60 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(230,232,235,0.25)_0%,rgba(199,203,209,0.08)_50%,transparent_75%)] pointer-events-none" />
           
-          <div className="absolute inset-4 md:inset-8 rounded-[2.5rem] bg-gradient-to-b from-white/[0.04] via-white/[0.02] to-transparent backdrop-blur-xl overflow-hidden shadow-2xl flex flex-col items-center justify-center p-8 lg:p-12 border border-white/10 group">
-            <div className="relative w-full h-[90%] flex items-center justify-center">
-              <div className="relative w-full h-full transform group-hover:-translate-y-3 group-hover:scale-105 group-hover:rotate-1 transition-all duration-700 ease-out drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
+          <div className="absolute inset-4 md:inset-8 rounded-[2.5rem] bg-gradient-to-b from-[#181B20]/95 via-[#111317]/85 to-[#0B0C0E] backdrop-blur-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85)] flex flex-col items-center justify-center p-8 lg:p-12 border border-[#C7CBD1]/20 hover:border-[#E6E8EB]/70 hover:shadow-[0_0_50px_rgba(230,232,235,0.18)] group transition-all duration-700 cursor-pointer">
+            
+            {/* 1. Minimal Silver Ambient Background Light (Illuminates in rich silver on hover) */}
+            <div className="absolute inset-4 rounded-full bg-[radial-gradient(circle_at_center,rgba(230,232,235,0.20)_0%,rgba(199,203,209,0.06)_45%,transparent_70%)] opacity-30 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-2xl" />
+
+            {/* 2. Outer Minimal Silver Collect Orbit Ring */}
+            <div className="absolute w-[82%] h-[82%] rounded-full border border-[#E6E8EB]/30 opacity-0 group-hover:opacity-90 scale-110 group-hover:scale-95 group-hover:rotate-45 transition-all duration-700 ease-out pointer-events-none" />
+
+            {/* 3. Inner Minimal Silver Dashed Orbit Ring */}
+            <div className="absolute w-[68%] h-[68%] rounded-full border border-dashed border-[#C7CBD1]/40 opacity-0 group-hover:opacity-80 scale-120 group-hover:scale-100 group-hover:-rotate-90 transition-all duration-1000 ease-out pointer-events-none" />
+
+            {/* 4. Converging Minimal Silver Collect Corner Reticles */}
+            <div className="absolute inset-8 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105 group-hover:scale-95">
+              <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#E6E8EB]/80 rounded-tl-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
+              <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-[#E6E8EB]/80 rounded-tr-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
+              <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-[#E6E8EB]/80 rounded-bl-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
+              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#E6E8EB]/80 rounded-br-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
+            </div>
+
+            {/* 5. Four Minimal Silver Orbit Nodes (Collect inward on hover) */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="relative w-[75%] h-[75%] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
+                <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
+              </div>
+            </div>
+
+            {/* Main Product Packet — Silver Illumination & Glow on Hover */}
+            <div className="relative w-full h-[90%] flex items-center justify-center z-10">
+              <div className="relative w-full h-full transform group-hover:-translate-y-2 group-hover:scale-106 transition-all duration-700 ease-out drop-shadow-[0_25px_50px_rgba(0,0,0,0.95)] group-hover:drop-shadow-[0_0_35px_rgba(230,232,235,0.35)] group-hover:brightness-110">
                 <Image 
                   src={product.image} 
                   alt={product.name} 
@@ -50,8 +79,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 />
               </div>
             </div>
-            {/* Ground shadow */}
-            <div className="w-1/2 h-3 bg-black/15 blur-md rounded-full mt-2 transform group-hover:scale-75 group-hover:opacity-40 transition-all duration-700" />
+
+            {/* Ground Specular Reflection Shadow */}
+            <div className="w-1/2 h-3 bg-black/40 blur-md rounded-full mt-2 transform group-hover:scale-75 group-hover:opacity-30 transition-all duration-700" />
           </div>
         </motion.div>
 
@@ -84,12 +114,21 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
-            <button className="flex-1 py-4 bg-[#EAD0A1] text-black font-semibold rounded-full hover:bg-white hover:scale-105 transition-all duration-300 tracking-widest text-sm uppercase shadow-[0_0_20px_rgba(234,208,161,0.2)]">
-              Add To Cart
-            </button>
-            <button className="py-4 px-10 rounded-full border border-white/20 text-white hover:border-white transition-all text-sm tracking-widest uppercase font-medium">
-              Subscribe &amp; Save 10%
-            </button>
+            <Link
+              href="/contact"
+              className="flex-1 py-4 text-center bg-gradient-to-r from-[#EAD0A1] to-[#E5A855] text-[#0B0C0E] font-bold rounded-full hover:from-white hover:to-[#EAD0A1] hover:scale-105 active:scale-95 transition-all duration-300 tracking-widest text-xs uppercase shadow-[0_10px_30px_rgba(234,208,161,0.25)] font-mono"
+            >
+              Enquire Product
+            </Link>
+            <a
+              href="https://wa.me/919995566396"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-4 px-8 text-center rounded-full bg-white/[0.04] hover:bg-[#25D366]/20 border border-white/15 hover:border-[#25D366] text-[#F2F2F0] hover:text-[#25D366] transition-all text-xs tracking-widest uppercase font-mono font-bold flex items-center justify-center gap-2"
+            >
+              <span>WhatsApp Direct</span>
+              <span>↗</span>
+            </a>
           </div>
 
           {/* Details Tabs (Ingredients / Nutrition) */}

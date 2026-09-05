@@ -44,11 +44,11 @@ export default function SmoothScroll({
     document.documentElement.classList.remove("reduced-motion");
 
     const lenis = new Lenis({
-      duration: 1.2, // Cinematic but responsive
+      duration: 1.05, // Cinematic responsiveness
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      wheelMultiplier: 1, // Standard wheel speed
-      touchMultiplier: 1.5,
-      syncTouch: true, // Better touch sync
+      wheelMultiplier: 1, // 1:1 wheel precision
+      touchMultiplier: 1.2, // Controlled touch response
+      syncTouch: true,
     });
 
     lenisRef.current = lenis;
@@ -62,8 +62,10 @@ export default function SmoothScroll({
     }
 
     gsap.ticker.add(raf);
-    // lagSmoothing helps prevent huge jumps if the main thread locks up
     gsap.ticker.lagSmoothing(0);
+
+    // Initial trigger refresh once layout is established
+    ScrollTrigger.refresh();
 
     return () => {
       gsap.ticker.remove(raf);

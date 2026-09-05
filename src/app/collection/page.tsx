@@ -1,22 +1,22 @@
 import { Metadata } from "next";
-import ProductsClient from "./ProductsClient";
+import ProductsClient from "../products/ProductsClient";
 import SchemaOrg from "@/components/SchemaOrg";
 import Footer from "@/components/Footer";
 
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Products | La Crispo",
+  title: "Collection | La Crispo",
   description: "Explore our complete collection of artisan premium snacks.",
 };
 
-export default function ProductsPage() {
+export default function CollectionPage() {
   const webpageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Products | La Crispo",
+    "name": "Collection | La Crispo",
     "description": "Explore our complete collection of artisan premium snacks.",
-    "url": "https://lacrispo.com/products"
+    "url": "https://lacrispo.com/collection"
   };
 
   return (
@@ -34,4 +34,3 @@ export default function ProductsPage() {
     </>
   );
 }
-

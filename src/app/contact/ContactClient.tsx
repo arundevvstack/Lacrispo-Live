@@ -314,20 +314,49 @@ export default function ContactClient() {
               </div>
             </div>
 
+            {/* Direct WhatsApp Instant Connect */}
+            <div className="p-6 rounded-3xl bg-[#25D366]/10 border border-[#25D366]/30 backdrop-blur-xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#25D366] block mb-1 font-bold">
+                    Instant Messaging
+                  </span>
+                  <h4 className="text-base font-bold text-white mb-1">
+                    Chat with Us on WhatsApp
+                  </h4>
+                  <p className="text-xs text-[#A7ACB4]">
+                    Direct chat with our culinary & sales team.
+                  </p>
+                </div>
+                <a
+                  href="https://wa.me/919995566396"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-black font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(37,211,102,0.3)] transition-all hover:scale-105 active:scale-100 flex items-center gap-2"
+                >
+                  <span>WhatsApp</span>
+                  <span className="text-xs">↗</span>
+                </a>
+              </div>
+            </div>
+
             {/* Headquarters & Hours */}
             <div className="p-7 rounded-3xl bg-[#111317]/60 border border-white/10 backdrop-blur-xl">
               <h3 className="text-xs font-mono uppercase tracking-widest text-[#858B94] mb-4">
                 Headquarters
               </h3>
-              <p className="text-sm text-[#F2F2F0] leading-relaxed mb-2 font-medium">
-                La Crispo Snacks Corp.
+              <p className="text-sm text-[#F2F2F0] leading-relaxed mb-1 font-semibold">
+                Hebron Consumables Enterprises
+              </p>
+              <p className="text-xs text-[#E5A855] font-mono mb-2">
+                A Brand of Hebron Group
               </p>
               <p className="text-xs text-[#858B94] leading-relaxed mb-4">
-                123 Spice Avenue, Flavor Town, CA 90210
+                Pettah, Trivandrum, Kerala – 695024, India
               </p>
               <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-[#858B94]">
                 <span>Support Hours</span>
-                <span className="text-white font-mono">Mon – Fri / 9am – 6pm EST</span>
+                <span className="text-white font-mono">Mon – Sat / 9am – 7pm IST</span>
               </div>
             </div>
 

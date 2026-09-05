@@ -4,20 +4,29 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const posts = [
   {
-    title: "The Art of the Perfect Crunch",
-    category: "Behind the Scenes",
+    title: "New Flavour: Kanthari & Crushed Black Pepper",
+    desc: "An explosive new artisan crunch crafted with authentic Kerala Kanthari (bird's eye) chilies, toasted black pepper, and fresh curry leaves.",
+    category: "Upcoming Flavour Launch",
+    tags: ["Kanthari Chili", "Black Pepper", "Curry Leaves"],
     size: "col-span-12 md:col-span-8 row-span-2",
+    badge: "Coming Soon",
   },
   {
-    title: "Sourcing our Spices",
-    category: "Ingredients",
+    title: "Sourcing our Spices: From Hill Bird's Eye Chilies to Malabar Peppercorn",
+    desc: "Handpicked wild chilies and estate spices sourced directly from local growers.",
+    category: "Ingredients & Heritage",
+    tags: ["Bird's Eye Chili", "Malabar Pepper"],
     size: "col-span-12 md:col-span-4 row-span-1",
   },
   {
-    title: "New Flavor: Coming Soon",
-    category: "Announcements",
+    title: "The Art of the Authentic Small-Batch Crunch",
+    desc: "Traditional kettle craftsmanship delivering uncompromised crispness in every bite.",
+    category: "Behind the Craft",
+    tags: ["Artisan", "Authentic Recipe"],
     size: "col-span-12 md:col-span-4 row-span-1",
   },
 ];
@@ -31,27 +40,25 @@ export default function BlogSection() {
     const section = sectionRef.current;
     if (!grid || !section) return;
 
-    gsap.fromTo(
-      grid.children,
-      { y: 100, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        stagger: 0.15,
-        duration: 1,
-        ease: "expo.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-        },
-      }
-    );
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        grid.children,
+        { y: 45, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.12,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 75%",
+          },
+        }
+      );
+    }, section);
 
-    return () => {
-      ScrollTrigger.getAll().forEach(t => {
-        if (t.trigger === section) t.kill();
-      });
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -60,38 +67,54 @@ export default function BlogSection() {
         
         <div className="flex items-end justify-between mb-16">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E5A855]" />
-              <span className="text-xs uppercase tracking-[0.3em] text-[#C7CBD1] font-bold font-mono">
-                The Journal
-              </span>
-            </div>
-            <h2 className="text-5xl md:text-7xl font-serif italic text-[#F2F2F0]">
+            <h2 className="text-5xl md:text-7xl font-serif italic bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent inline-block">
               Latest News
             </h2>
           </div>
-          <button aria-label="View all blog posts" className="hidden md:block text-[#C7CBD1] font-bold tracking-widest uppercase text-xs border-b border-[#C7CBD1] pb-1 hover:text-[#E6E8EB] hover:border-[#E6E8EB] transition-colors duration-300">
-            View All
-          </button>
         </div>
 
         <div ref={gridRef} className="grid grid-cols-12 gap-6 auto-rows-[250px]">
           {posts.map((post, i) => (
             <article 
               key={i} 
-              className={`${post.size} group relative rounded-3xl overflow-hidden bg-[#181B20]/80 border border-[#C7CBD1]/20 p-8 flex flex-col justify-end cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.6)] hover:border-[#E6E8EB]/50 transition-all duration-300`}
+              className={`${post.size} group relative rounded-3xl overflow-hidden bg-[#181B20]/80 border border-[#C7CBD1]/20 p-8 flex flex-col justify-between cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.6)] hover:border-[#E6E8EB]/50 transition-all duration-300`}
               aria-labelledby={`post-title-${i}`}
             >
               {/* Silver Specular Hover Effect */}
               <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
               
-              <div className="relative z-10 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <span className="text-[#858B94] uppercase tracking-[0.2em] text-xs font-bold font-mono mb-3 block">
+              {/* Top Badge (if any) */}
+              <div className="relative z-10 flex items-center justify-between w-full">
+                <span className="text-[#858B94] uppercase tracking-[0.2em] text-xs font-bold font-mono">
                   {post.category}
                 </span>
-                <h3 id={`post-title-${i}`} className="text-2xl md:text-3xl text-[#F2F2F0] font-serif font-medium tracking-tight group-hover:text-[#E6E8EB] transition-colors">
+                {post.badge && (
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold px-3 py-1 rounded-full bg-[#E5A855]/15 text-[#E5A855] border border-[#E5A855]/30">
+                    {post.badge}
+                  </span>
+                )}
+              </div>
+              
+              {/* Bottom Content & Spice Tags */}
+              <div className="relative z-10 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 flex flex-col gap-3">
+                <h3 id={`post-title-${i}`} className="text-2xl md:text-3xl text-[#F2F2F0] font-serif font-medium tracking-tight group-hover:text-[#E6E8EB] transition-colors leading-tight">
                   {post.title}
                 </h3>
+                <p className="text-xs sm:text-sm text-[#A7ACB4] line-clamp-2 leading-relaxed font-light">
+                  {post.desc}
+                </p>
+                {post.tags && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {post.tags.map((tag, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#C7CBD1] font-mono font-semibold"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </article>
           ))}
