@@ -116,13 +116,13 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Direct CTA / Shop Now Button & Mobile Trigger */}
+          {/* Direct CTA / Product Range Button & Mobile Trigger */}
           <div className="flex items-center gap-2.5">
             <Link
               href="/products"
               className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] text-[11px] font-bold uppercase tracking-[0.2em] shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-105 active:scale-95 transition-all duration-300 group"
             >
-              <span>Shop Now</span>
+              <span>Product Range</span>
             </Link>
 
             {/* Mobile Menu Button */}
