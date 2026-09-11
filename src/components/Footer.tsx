@@ -42,7 +42,7 @@ export default function Footer() {
     <footer
       id="contact"
       ref={footerRef}
-      className="relative bg-[#060709] text-[#F2F2F0] pt-24 pb-16 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-white/10"
+      className="relative bg-[var(--surface-secondary)] text-[var(--text-primary)] pt-24 pb-16 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-[var(--border)]"
     >
       {/* Subtle Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#E5A855]/10 blur-[140px] pointer-events-none rounded-full" />
@@ -53,13 +53,13 @@ export default function Footer() {
           
           {/* Left: Taste the Tradition */}
           <div className="md:col-span-6">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text-primary)] leading-tight mb-4">
               Taste the{" "}
-              <span className="font-serif italic font-normal bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
+              <span className="font-serif italic font-normal bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
                 Tradition.
               </span>
             </h2>
-            <p className="text-[#A7ACB4] max-w-md text-base leading-relaxed mb-6">
+            <p className="text-[var(--text-secondary)] max-w-md text-base leading-relaxed mb-6">
               La&apos;Crispo is a premium snack brand from Hebron Group, delivering traditional South Indian flavours and artisan crisps with pure quality and minimum oil.
             </p>
 
@@ -92,53 +92,53 @@ export default function Footer() {
               {/* Direct Mailto Email Button */}
               <a
                 href="mailto:info@hebrongroup.com?subject=La%20Crispo%20Inquiry"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-[#E5A855]/50 text-[#C7CBD1] hover:text-white transition-all text-xs font-mono group"
+                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-[var(--surface-glass)] hover:bg-[var(--surface-glass-solid)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all text-xs font-mono group"
                 aria-label="Direct Email to info@hebrongroup.com"
               >
-                <svg className="w-3.5 h-3.5 text-[#E5A855]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 text-[var(--accent-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span>info@hebrongroup.com</span>
-                <span className="text-[#858B94] text-[10px] group-hover:text-[#E5A855] transition-colors">↗</span>
+                <span className="text-[var(--text-muted)] text-[10px] group-hover:text-[var(--accent-gold)] transition-colors">↗</span>
               </a>
             </div>
 
-            <div className="text-xs text-[#858B94] font-mono space-y-1">
-              <p className="text-white font-semibold">Hebron Consumables Enterprises</p>
+            <div className="text-xs text-[var(--text-muted)] font-mono space-y-1">
+              <p className="text-[var(--text-primary)] font-semibold">Hebron Consumables Enterprises</p>
               <p>Pettah, Trivandrum, Kerala – 695024</p>
-              <p>Phone: <a href="tel:+919995566396" className="text-[#E5A855] hover:underline">+91 999 55 66 396</a></p>
+              <p>Phone: <a href="tel:+919995566396" className="text-[var(--accent-gold)] hover:underline">+91 999 55 66 396</a></p>
             </div>
           </div>
 
           {/* Right: Essential Navigation & Connect */}
           <div className="md:col-span-6 grid grid-cols-2 gap-8 md:pl-10">
             <div>
-              <h3 className="text-xs font-mono tracking-widest text-[#858B94] uppercase mb-4">
+              <h3 className="text-xs font-mono tracking-widest text-[var(--text-muted)] uppercase mb-4">
                 Explore
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/about" className="text-[#A7ACB4] hover:text-[#E5A855] transition-colors">
+                  <Link href="/about" className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products" className="text-[#A7ACB4] hover:text-white transition-colors">
+                  <Link href="/products" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                     Product Collection
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#flavours" className="text-[#A7ACB4] hover:text-white transition-colors">
+                  <Link href="/#flavours" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                     Flavours
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#factory" className="text-[#A7ACB4] hover:text-white transition-colors">
+                  <Link href="/#factory" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                     The Craft
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#blog" className="text-[#A7ACB4] hover:text-white transition-colors">
+                  <Link href="/#blog" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                     Blog
                   </Link>
                 </li>
@@ -146,17 +146,17 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="text-xs font-mono tracking-widest text-[#858B94] uppercase mb-4">
+              <h3 className="text-xs font-mono tracking-widest text-[var(--text-muted)] uppercase mb-4">
                 Connect
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
                     href="/contact"
-                    className="text-[#A7ACB4] hover:text-[#E5A855] transition-colors flex items-center gap-1.5"
+                    className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors flex items-center gap-1.5"
                   >
                     <span>Contact Us (Form)</span>
-                    <span className="text-[10px] text-[#858B94]">↗</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">↗</span>
                   </Link>
                 </li>
                 <li>
@@ -164,31 +164,31 @@ export default function Footer() {
                     href="https://wa.me/919995566396"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#A7ACB4] hover:text-[#25D366] transition-colors flex items-center gap-1.5"
+                    className="text-[var(--text-secondary)] hover:text-[#25D366] transition-colors flex items-center gap-1.5"
                   >
                     <span>WhatsApp Direct</span>
-                    <span className="text-[10px] text-[#858B94]">↗</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">↗</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="mailto:info@hebrongroup.com?subject=La%20Crispo%20Inquiry"
-                    className="text-[#A7ACB4] hover:text-[#E5A855] transition-colors flex items-center gap-1.5"
+                    className="text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors flex items-center gap-1.5"
                   >
                     <span>Email Us</span>
-                    <span className="text-[10px] text-[#858B94]">↗</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">↗</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="tel:+919995566396"
-                    className="text-[#A7ACB4] hover:text-white transition-colors"
+                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                   >
                     +91 999 55 66 396
                   </a>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-[#A7ACB4] hover:text-white transition-colors">
+                  <Link href="/contact" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                     Wholesale Enquiries
                   </Link>
                 </li>
@@ -198,16 +198,16 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar: Heritage & Rights */}
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#858B94]">
+        <div className="pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--text-muted)]">
           <p>© {new Date().getFullYear()} La&apos;Crispo. A Brand by Hebron Group. All Rights Reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="/about" className="hover:text-white transition-colors">
+            <Link href="/about" className="hover:text-[var(--text-primary)] transition-colors">
               Heritage
             </Link>
-            <Link href="/contact" className="hover:text-white transition-colors">
+            <Link href="/contact" className="hover:text-[var(--text-primary)] transition-colors">
               Contact
             </Link>
-            <span className="text-[#E5A855]">Made with Artisan Care</span>
+            <span className="text-[var(--accent-gold)]">Made with Artisan Care</span>
           </div>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function Footer() {
       {/* Massive Ambient Background Brand Typography */}
       <h2
         ref={logoRef}
-        className="text-[14vw] font-serif italic text-white/5 whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 select-none pointer-events-none tracking-tighter"
+        className="text-[14vw] font-serif italic text-[var(--watermark-color)] whitespace-nowrap absolute -bottom-8 left-1/2 -translate-x-1/2 select-none pointer-events-none tracking-tighter"
         aria-hidden="true"
       >
         La Crispo

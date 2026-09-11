@@ -4,8 +4,23 @@ import { useState, useMemo } from "react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { products, Product } from "@/data/products";
+import { products } from "@/data/products";
 import ProductHoverSequence from "@/components/ProductHoverSequence";
+const getProductTint = (slug: string) => {
+  if (slug.includes("banana") || slug.includes("dal") || slug.includes("tapioca")) {
+    return "var(--tint-yellow)";
+  }
+  if (slug.includes("garlic") || slug.includes("murukku") || slug.includes("mixture") || slug.includes("andhra")) {
+    return "var(--tint-pink)";
+  }
+  if (slug.includes("tomato") || slug.includes("chili") || slug.includes("pepper") || slug.includes("chilli")) {
+    return "var(--tint-orange)";
+  }
+  if (slug.includes("jackfruit") || slug.includes("salt") || slug.includes("peanut")) {
+    return "var(--tint-blue)";
+  }
+  return "var(--tint-green)";
+};
 
 export default function ProductsClient() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -79,20 +94,20 @@ export default function ProductsClient() {
         <div className="flex-1 space-y-8 text-center lg:text-left relative z-10">
           
           {/* Subtle Tag Pill */}
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-[#EAD0A1]/30 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-[#E5A855] animate-pulse" />
-            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[#EAD0A1]">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-[var(--accent-gold)] animate-pulse" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[var(--accent-gold)]">
               Artisan Master Collection
             </span>
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-6xl lg:text-7xl font-serif italic text-white leading-[1.08] tracking-tight transition-all duration-500"
+            className="text-4xl sm:text-6xl lg:text-7xl font-serif italic text-[var(--text-primary)] leading-[1.08] tracking-tight transition-all duration-500"
           >
             All Premium Snacks are <br className="hidden lg:block" />
             Available at{" "}
-            <span className="bg-gradient-to-r from-[#F2F2F0] via-[#EAD0A1] to-[#E5A855] bg-clip-text text-transparent drop-shadow-[0_4px_25px_rgba(234,208,161,0.3)]">
+            <span className="bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
               La Crispo
             </span>
           </motion.h1>
@@ -101,7 +116,7 @@ export default function ProductsClient() {
             variants={itemVariants}
             className="flex items-center justify-center lg:justify-start gap-4"
           >
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[#EAD0A1]/30 relative bg-[#181B20]/90 backdrop-blur-md p-1 shadow-[0_8px_20px_rgba(0,0,0,0.6)] flex-shrink-0">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border border-[var(--border)] relative bg-[var(--surface-card)] backdrop-blur-md p-1 shadow-[0_8px_20px_rgba(0,0,0,0.1)] flex-shrink-0">
               <Image
                 src="/images/products/BANANA CHIPS (1).png"
                 alt="La Crispo"
@@ -110,7 +125,7 @@ export default function ProductsClient() {
                 sizes="56px"
               />
             </div>
-            <p className="text-[#A7ACB4] text-sm max-w-sm text-left leading-relaxed font-normal">
+            <p className="text-[var(--text-secondary)] text-sm max-w-sm text-left leading-relaxed font-normal">
               We are just a click away when you crave for artisan, hand-crafted crisps with pure quality and minimum oil.
             </p>
           </motion.div>
@@ -131,9 +146,9 @@ export default function ProductsClient() {
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/15 hover:border-[#EAD0A1]/50 text-[#F2F2F0] hover:text-[#EAD0A1] transition-all duration-300 group backdrop-blur-md"
+              className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-[var(--surface-secondary)] hover:bg-[var(--surface-card)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 text-[var(--text-primary)] hover:text-[var(--accent-gold)] transition-all duration-300 group backdrop-blur-md"
             >
-              <span className="w-8 h-8 rounded-full bg-[#EAD0A1]/15 text-[#EAD0A1] flex items-center justify-center group-hover:scale-110 transition-transform text-xs">
+              <span className="w-8 h-8 rounded-full bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] flex items-center justify-center group-hover:scale-110 transition-transform text-xs">
                 ▶
               </span>
               <span className="text-xs uppercase tracking-widest font-mono font-bold">
@@ -152,7 +167,7 @@ export default function ProductsClient() {
           
           {/* Decorative Outer Aura Ring */}
           <div className="absolute inset-8 rounded-full border border-[#EAD0A1]/15 pointer-events-none animate-spin-slow" style={{ animationDuration: "40s" }} />
-          <div className="absolute inset-16 rounded-full border border-dashed border-white/10 pointer-events-none animate-spin-slow" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
+          <div className="absolute inset-16 rounded-full border border-dashed border-[var(--border)] pointer-events-none animate-spin-slow" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
 
           {/* Circulating Orbit of Artisan Chips */}
           <motion.div
@@ -161,15 +176,15 @@ export default function ProductsClient() {
             className="absolute inset-0 rounded-full pointer-events-none z-20"
           >
             {[
-              { img: "/images/chip_orbit_1.png", top: "4%", left: "50%", rot: 15, size: "w-14 h-14 sm:w-16 sm:h-16" },
-              { img: "/images/chip_orbit_2.png", top: "34%", left: "94%", rot: -25, size: "w-12 h-12 sm:w-15 sm:h-15" },
-              { img: "/images/chip_orbit_3.png", top: "86%", left: "76%", rot: 40, size: "w-14 h-14 sm:w-16 sm:h-16" },
-              { img: "/images/chip_orbit_1.png", top: "86%", left: "24%", rot: -20, size: "w-13 h-13 sm:w-15 sm:h-15" },
-              { img: "/images/chip_orbit_2.png", top: "34%", left: "6%", rot: 30, size: "w-13 h-13 sm:w-15 sm:h-15" },
+              { img: "/images/chips/golden_crisp.png", top: "4%", left: "50%", rot: 15, size: "w-16 h-16 sm:w-20 sm:h-20" },
+              { img: "/images/chips/banana_slice.png", top: "34%", left: "94%", rot: -25, size: "w-14 h-14 sm:w-18 sm:h-18" },
+              { img: "/images/chips/murukku_crisp.png", top: "86%", left: "76%", rot: 40, size: "w-16 h-16 sm:w-20 sm:h-20" },
+              { img: "/images/chips/golden_crisp.png", top: "86%", left: "24%", rot: -45, size: "w-15 h-15 sm:w-19 sm:h-19" },
+              { img: "/images/chips/banana_slice.png", top: "34%", left: "6%", rot: 30, size: "w-14 h-14 sm:w-18 sm:h-18" },
             ].map((chip, idx) => (
               <div
                 key={idx}
-                className={`absolute ${chip.size} -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)]`}
+                className={`absolute ${chip.size} -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]`}
                 style={{ top: chip.top, left: chip.left }}
               >
                 <div
@@ -181,7 +196,7 @@ export default function ProductsClient() {
                     alt="Circulating Crisp"
                     fill
                     className="object-contain"
-                    sizes="64px"
+                    sizes="80px"
                   />
                 </div>
               </div>
@@ -221,25 +236,25 @@ export default function ProductsClient() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative bg-gradient-to-r from-[#14161B]/90 via-[#181B20]/80 to-[#14161B]/90 backdrop-blur-2xl border border-white/10 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 my-16 sm:my-24 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden"
+        className="relative bg-[var(--surface-card)] backdrop-blur-2xl border border-[var(--border)] rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 my-16 sm:my-24 shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden"
       >
         <div className="absolute top-0 right-1/4 w-72 h-36 bg-[#EAD0A1]/10 blur-[80px] pointer-events-none rounded-full" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 divide-y md:divide-y-0 md:divide-x divide-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
           {[
             { icon: "📦", title: "Secure Shipping", desc: "Your premium snacks delivered safely to your door." },
             { icon: "🥔", title: "Artisan Quality", desc: "100% locally sourced potatoes with hand-crafted care." },
             { icon: "✨", title: "Free Premium Delivery", desc: "Enjoy complimentary shipping on all bulk orders." },
           ].map((feature, i) => (
             <div key={i} className={`flex items-start gap-5 ${i !== 0 ? "pt-6 md:pt-0 md:pl-8" : ""}`}>
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#EAD0A1]/20 to-[#EAD0A1]/5 text-[#EAD0A1] flex items-center justify-center text-2xl flex-shrink-0 border border-[#EAD0A1]/30 shadow-[0_4px_15px_rgba(234,208,161,0.15)]">
+              <div className="w-14 h-14 rounded-2xl bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] flex items-center justify-center text-2xl flex-shrink-0 border border-[var(--border)] shadow-[var(--shadow-soft)]">
                 {feature.icon}
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-medium text-white mb-1.5 flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-medium text-[var(--text-primary)] mb-1.5 flex items-center gap-2">
                   {feature.title}
                 </h3>
-                <p className="text-[#A7ACB4] text-xs sm:text-sm leading-relaxed">
+                <p className="text-[var(--text-secondary)] text-xs sm:text-sm leading-relaxed">
                   {feature.desc}
                 </p>
               </div>
@@ -258,17 +273,17 @@ export default function ProductsClient() {
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 sm:mb-16 gap-6">
           <div>
-            <span className="text-[#EAD0A1] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-white/5 border border-[#EAD0A1]/30 w-max">
+            <span className="text-[var(--accent-gold)] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] w-max">
               Chef Curated
             </span>
             <motion.h2
               variants={itemVariants}
-              className="text-3xl sm:text-5xl md:text-6xl font-serif italic text-white leading-tight bg-gradient-to-r from-white via-[#F2F2F0] to-[#EAD0A1] bg-clip-text text-transparent"
+              className="text-3xl sm:text-5xl md:text-6xl font-serif italic text-[var(--text-primary)] leading-tight"
             >
               Our Signature Flavors
             </motion.h2>
           </div>
-          <motion.p variants={itemVariants} className="text-[#A7ACB4] text-sm max-w-sm text-left md:text-right leading-relaxed">
+          <motion.p variants={itemVariants} className="text-[var(--text-secondary)] text-sm max-w-sm text-left md:text-right leading-relaxed">
             Here are some of our best distributed flavors. Explore what makes La Crispo a global standard of crunch.
           </motion.p>
         </div>
@@ -278,28 +293,35 @@ export default function ProductsClient() {
             <motion.article key={flavor.slug} variants={itemVariants}>
               <Link
                 href={`/products/${flavor.slug}`}
-                className="group relative block bg-gradient-to-b from-[#181B20] via-[#14161B] to-[#0E1013] border border-white/15 hover:border-[#EAD0A1]/60 rounded-[2.25rem] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.85)] cursor-pointer overflow-hidden"
+                className="group relative block bg-[var(--surface-card)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 rounded-[2.25rem] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_45px_rgba(60,45,30,0.08)] cursor-pointer overflow-hidden"
               >
                 {/* Dynamic Ambient Card Backlight */}
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#EAD0A1]/15 rounded-full blur-3xl group-hover:opacity-100 opacity-40 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 bg-[var(--accent-gold)]/10 rounded-full blur-3xl group-hover:opacity-100 opacity-40 transition-opacity duration-500 pointer-events-none" />
 
-                <ProductHoverSequence
-                  image={flavor.image}
-                  name={flavor.name}
-                  slug={flavor.slug}
-                  isSignature={true}
-                  size="large"
-                />
+                <div 
+                  className="w-full rounded-2xl p-3 flex justify-center mb-4 relative z-10 overflow-hidden transition-all duration-500"
+                  style={{
+                    backgroundColor: getProductTint(flavor.slug),
+                  }}
+                >
+                  <ProductHoverSequence
+                    image={flavor.image}
+                    name={flavor.name}
+                    slug={flavor.slug}
+                    isSignature={true}
+                    size="large"
+                  />
+                </div>
 
                 {/* Flavor Details */}
                 <div className="mt-6 flex flex-col items-start relative z-10">
                   <div className="flex items-center justify-between w-full mb-2">
-                    <h3 className="text-xl sm:text-2xl font-serif italic text-[#F2F2F0] group-hover:text-[#EAD0A1] transition-colors duration-300">
+                    <h3 className="text-xl sm:text-2xl font-serif italic text-[var(--text-primary)] group-hover:text-[var(--accent-gold)] transition-colors duration-300">
                       {flavor.name}
                     </h3>
                   </div>
 
-                  <p className="text-[#A7ACB4] text-xs line-clamp-2 mb-4 leading-relaxed font-normal">
+                  <p className="text-[var(--text-secondary)] text-xs line-clamp-2 mb-4 leading-relaxed font-normal">
                     {flavor.description}
                   </p>
 
@@ -308,26 +330,26 @@ export default function ProductsClient() {
                     {flavor.ingredients.slice(0, 4).map((ing, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] bg-white/5 border border-white/10 text-[#C7CBD1] px-2.5 py-0.5 rounded-full font-mono font-medium"
+                        className="text-[10px] bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)] px-2.5 py-0.5 rounded-full font-mono font-medium"
                       >
                         {ing}
                       </span>
                     ))}
                     {flavor.ingredients.length > 4 && (
-                      <span className="text-[10px] bg-[#EAD0A1]/15 text-[#EAD0A1] px-2 py-0.5 rounded-full border border-[#EAD0A1]/30 font-mono font-semibold">
+                      <span className="text-[10px] bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] px-2 py-0.5 rounded-full border border-[var(--accent-gold-border)] font-mono font-semibold">
                         +{flavor.ingredients.length - 4} more
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between w-full pt-4 border-t border-white/10">
-                    <div className="flex items-center gap-1.5 text-[#E5A855] text-xs font-mono font-bold">
+                  <div className="flex items-center justify-between w-full pt-4 border-t border-[var(--border)]">
+                    <div className="flex items-center gap-1.5 text-[var(--accent-gold)] text-xs font-mono font-bold">
                       <span>★</span>
                       <span>{flavor.rating.toFixed(1)}</span>
-                      <span className="text-[#858B94] font-normal ml-1">({flavor.reviews} reviews)</span>
+                      <span className="text-[var(--text-muted)] font-normal ml-1">({flavor.reviews} reviews)</span>
                     </div>
 
-                    <span className="text-[#EAD0A1] text-xs uppercase tracking-widest font-mono font-bold flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300">
+                    <span className="text-[var(--accent-gold)] group-hover:text-[var(--text-primary)] group-active:text-[var(--text-primary)] text-xs uppercase tracking-widest font-mono font-bold flex items-center gap-1.5 group-hover:translate-x-1 transition-all duration-300">
                       View Details <span className="text-base leading-none">›</span>
                     </span>
                   </div>
@@ -342,13 +364,13 @@ export default function ProductsClient() {
       <section id="menu" className="my-20 sm:my-28">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
           <div>
-            <span className="text-[#EAD0A1] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-white/5 border border-[#EAD0A1]/30 w-max">
+            <span className="text-[var(--accent-gold)] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] w-max">
               All Varieties
             </span>
-            <h2 className="text-3xl sm:text-5xl font-serif italic text-white mb-2 leading-tight bg-gradient-to-r from-white via-[#F2F2F0] to-[#EAD0A1] bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-5xl font-serif italic text-[var(--text-primary)] mb-2 leading-tight">
               Our Complete Menu
             </h2>
-            <p className="text-[#A7ACB4] text-sm max-w-md leading-relaxed">
+            <p className="text-[var(--text-secondary)] text-sm max-w-md leading-relaxed">
               The full collection of our artisan crafted premium crisps and traditional snacks.
             </p>
           </div>
@@ -367,7 +389,7 @@ export default function ProductsClient() {
                 className={`px-4 py-2 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                   selectedCategory === cat.id
                     ? "bg-gradient-to-r from-[#EAD0A1] to-[#E5A855] text-[#0B0C0E] shadow-[0_4px_15px_rgba(234,208,161,0.3)] scale-105"
-                    : "bg-white/5 hover:bg-white/10 text-[#C7CBD1] border border-white/10"
+                    : "bg-[var(--surface-secondary)] hover:bg-[var(--surface-card)] text-[var(--text-secondary)] border border-[var(--border)]"
                 }`}
               >
                 {cat.label}
@@ -391,13 +413,18 @@ export default function ProductsClient() {
               >
                 <Link
                   href={`/products/${item.slug}`}
-                  className="relative bg-gradient-to-b from-[#181B20]/90 via-[#14161B]/90 to-[#0E1013]/90 border border-white/10 hover:border-[#EAD0A1]/50 rounded-3xl p-5 sm:p-6 flex flex-col items-center text-center hover:bg-[#1C2026]/90 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.7)] group h-full cursor-pointer overflow-hidden"
+                  className="relative bg-[var(--surface-card)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 rounded-3xl p-5 sm:p-6 flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_16px_36px_rgba(60,45,30,0.08)] group h-full cursor-pointer overflow-hidden"
                 >
                   {/* Ambient Glow Spotlight Behind Product Image */}
-                  <div className="absolute top-16 left-1/2 -translate-x-1/2 w-32 h-32 bg-[#EAD0A1]/10 rounded-full blur-2xl group-hover:opacity-100 opacity-30 transition-opacity duration-300 pointer-events-none" />
+                  <div className="absolute top-16 left-1/2 -translate-x-1/2 w-32 h-32 bg-[var(--accent-gold)]/10 rounded-full blur-2xl group-hover:opacity-100 opacity-30 transition-opacity duration-300 pointer-events-none" />
 
-                  {/* Snack Sequence Showcase */}
-                  <div className="w-full flex justify-center mb-4 relative z-10">
+                  {/* Snack Sequence Showcase with Soft Tint Stage */}
+                  <div 
+                    className="w-full rounded-2xl p-2.5 flex justify-center mb-4 relative z-10 overflow-hidden transition-all duration-500"
+                    style={{
+                      backgroundColor: getProductTint(item.slug),
+                    }}
+                  >
                     <ProductHoverSequence
                       image={item.image}
                       name={item.name}
@@ -407,23 +434,23 @@ export default function ProductsClient() {
                     />
                   </div>
 
-                  <h3 className="text-lg font-serif italic text-white mb-1.5 group-hover:text-[#EAD0A1] transition-colors duration-300 leading-snug">
+                  <h3 className="text-lg font-serif italic text-[var(--text-primary)] mb-1.5 group-hover:text-[var(--accent-gold)] transition-colors duration-300 leading-snug">
                     {item.name}
                   </h3>
 
-                  <p className="text-[#A7ACB4] text-[11px] line-clamp-2 mb-3 leading-relaxed font-normal">
+                  <p className="text-[var(--text-secondary)] text-[11px] line-clamp-2 mb-3 leading-relaxed font-normal">
                     {item.description}
                   </p>
 
                   {/* Rating Stars */}
-                  <div className="flex items-center gap-1.5 mb-4 text-[#E5A855] text-xs font-mono font-bold">
+                  <div className="flex items-center gap-1.5 mb-4 text-[var(--accent-gold)] text-xs font-mono font-bold">
                     <span>★</span>
                     <span>{item.rating.toFixed(1)}</span>
-                    <span className="text-[#858B94] font-normal ml-1">({item.reviews})</span>
+                    <span className="text-[var(--text-muted)] font-normal ml-1">({item.reviews})</span>
                   </div>
 
-                  <div className="w-full mt-auto pt-3 border-t border-white/10 relative z-10">
-                    <span className="w-full py-2.5 rounded-full bg-gradient-to-r from-white/10 to-white/5 group-hover:from-[#EAD0A1] group-hover:to-[#E5A855] group-hover:text-[#0B0C0E] text-[#F2F2F0] font-mono font-bold text-[10px] uppercase tracking-widest transition-all duration-300 shadow-sm block text-center">
+                  <div className="w-full mt-auto pt-3 border-t border-[var(--border)] relative z-10">
+                    <span className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] font-mono font-bold text-[10px] uppercase tracking-widest transition-all duration-300 shadow-[0_4px_15px_rgba(229,168,85,0.25)] group-hover:from-white group-hover:to-[#EAD0A1] block text-center">
                       View Details
                     </span>
                   </div>
@@ -443,7 +470,7 @@ export default function ProductsClient() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-7 relative min-h-[340px] sm:min-h-[380px] rounded-[2.5rem] bg-gradient-to-b from-[#181B20] via-[#14161B] to-[#0E1013] border border-white/15 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 group cursor-pointer shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden"
+            className="lg:col-span-7 relative min-h-[340px] sm:min-h-[380px] rounded-[2.5rem] bg-gradient-to-b from-[var(--surface-card)] via-[var(--surface-secondary)] to-[var(--surface-card)] border border-[var(--border)] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 group cursor-pointer shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden"
           >
             {/* Ambient Gold/Amber Halo */}
             <div className="absolute inset-0 bg-gradient-to-tr from-[#EAD0A1]/15 via-transparent to-transparent rounded-3xl blur-2xl pointer-events-none" />
@@ -451,7 +478,7 @@ export default function ProductsClient() {
             {/* Left Content */}
             <div className="flex-1 flex flex-col justify-between h-full z-10 space-y-6">
               <div className="flex items-center gap-3">
-                <span className="text-[#EAD0A1] text-[10px] uppercase tracking-[0.25em] font-mono font-bold px-3 py-1 rounded-full bg-white/5 border border-[#EAD0A1]/30 backdrop-blur-md">
+                <span className="text-[var(--accent-gold)] text-[10px] uppercase tracking-[0.25em] font-mono font-bold px-3 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] backdrop-blur-md">
                   Limited Edition
                 </span>
                 <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-black font-bold text-[11px] uppercase tracking-wider shadow-md">
@@ -460,10 +487,10 @@ export default function ProductsClient() {
               </div>
 
               <div>
-                <h3 className="text-2xl sm:text-3xl font-serif italic text-white leading-tight group-hover:text-[#EAD0A1] transition-colors duration-300 mb-2">
+                <h3 className="text-2xl sm:text-3xl font-serif italic text-[var(--text-primary)] leading-tight group-hover:text-[var(--accent-gold)] transition-colors duration-300 mb-2">
                   Jackfruit Chips Reserve
                 </h3>
-                <p className="text-[#A7ACB4] text-xs sm:text-sm font-normal leading-relaxed max-w-sm">
+                <p className="text-[var(--text-secondary)] text-xs sm:text-sm font-normal leading-relaxed max-w-sm">
                   Hand-harvested Varikka jackfruit crisps lightly salted to perfection.
                 </p>
               </div>
@@ -471,7 +498,7 @@ export default function ProductsClient() {
               <div>
                 <Link
                   href="/products/jackfruit-chips"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-[#EAD0A1] hover:text-black border border-white/20 hover:border-[#EAD0A1] text-xs font-mono font-bold uppercase tracking-widest transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] font-mono font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-105 active:scale-95"
                 >
                   <span>Explore Reserve</span>
                   <span>›</span>
@@ -481,7 +508,7 @@ export default function ProductsClient() {
 
             {/* Right Packet Visual */}
             <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex-shrink-0 flex items-center justify-center">
-              <div className="relative w-full h-full transform group-hover:scale-108 group-hover:-translate-y-2 transition-all duration-700 ease-out drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]">
+              <div className="relative w-full h-full transform group-hover:scale-108 group-hover:-translate-y-2 transition-all duration-700 ease-out drop-shadow-[0_25px_50px_rgba(0,0,0,0.35)]">
                 <Image
                   src="/images/products/JACKFRUIT CHIPS.png"
                   alt="Jackfruit Chips Reserve"
@@ -540,4 +567,3 @@ export default function ProductsClient() {
     </div>
   );
 }
-

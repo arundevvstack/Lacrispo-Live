@@ -21,7 +21,7 @@ export default function ContactPage() {
   return (
     <>
       <SchemaOrg schema={contactSchema} />
-      <main className="bg-[#070809] min-h-screen text-[#F2F2F0] selection:bg-[#E5A855] selection:text-black">
+      <main className="bg-[var(--background)] min-h-screen text-[var(--text-primary)] selection:bg-[#E5A855] selection:text-black">
         <ContactClient />
       </main>
     </>

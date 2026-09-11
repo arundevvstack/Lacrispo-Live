@@ -43,11 +43,10 @@ export default function ContactClient() {
   };
 
   return (
-    <div className="relative min-h-screen pt-28 pb-20 px-6 sm:px-10 lg:px-16 overflow-hidden">
+    <div className="relative min-h-screen bg-[var(--background)] text-[var(--text-primary)] pt-28 pb-20 px-6 sm:px-10 lg:px-16 overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-0 right-1/4 w-[500px] h-[350px] bg-[#E5A855]/10 blur-[140px] pointer-events-none rounded-full" />
       <div className="absolute bottom-10 left-10 w-[400px] h-[350px] bg-[#C96F32]/10 blur-[130px] pointer-events-none rounded-full" />
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] opacity-35 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
@@ -55,7 +54,7 @@ export default function ContactClient() {
         <div className="flex items-center justify-between mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono tracking-widest text-[#C7CBD1] hover:text-white transition-all group"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface-glass)] hover:bg-[var(--surface-glass-solid)] border border-[var(--border)] text-xs font-mono tracking-widest text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all group"
           >
             <svg
               className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
@@ -68,24 +67,24 @@ export default function ContactClient() {
             <span>Back to Home</span>
           </Link>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>Average response: &lt; 24h</span>
           </div>
         </div>
 
         {/* Header Title */}
         <div className="max-w-3xl mb-16">
-          <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#E5A855] font-bold block mb-3">
+          <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-[var(--accent-gold)] font-bold block mb-3">
             Get In Touch
           </span>
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-[var(--text-primary)] leading-[1.1] mb-6">
             Let&apos;s start a{" "}
-            <span className="font-serif italic font-normal bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
+            <span className="font-serif italic font-normal bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
               conversation.
             </span>
           </h1>
-          <p className="text-[#A7ACB4] text-base sm:text-lg leading-relaxed">
+          <p className="text-[var(--text-secondary)] text-base sm:text-lg leading-relaxed">
             Fill out the form below and our team will get back to you with custom catalog pricing, sample requests, or collaboration details.
           </p>
         </div>
@@ -95,7 +94,7 @@ export default function ContactClient() {
           
           {/* Form Container (7 cols) */}
           <div className="lg:col-span-7">
-            <div className="relative p-7 sm:p-10 rounded-3xl bg-[#111317]/85 border border-white/10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            <div className="relative p-7 sm:p-10 rounded-3xl bg-[var(--surface-card)] border border-[var(--border)] backdrop-blur-xl shadow-[var(--shadow-card)]">
               
               <AnimatePresence mode="wait">
                 {!isSubmitted ? (
@@ -109,7 +108,7 @@ export default function ContactClient() {
                   >
                     {/* Inquiry Type Radio / Pill Selector */}
                     <div>
-                      <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-3">
+                      <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-3">
                         Inquiry Type *
                       </label>
                       <div className="grid grid-cols-2 gap-2.5">
@@ -118,10 +117,10 @@ export default function ContactClient() {
                             key={type.id}
                             type="button"
                             onClick={() => setFormData({ ...formData, inquiryType: type.id })}
-                            className={`px-4 py-3 rounded-xl text-xs font-medium text-left border transition-all ${
+                            className={`px-4 py-3 rounded-xl text-xs font-medium text-left border transition-all cursor-pointer ${
                               formData.inquiryType === type.id
-                                ? "bg-[#E5A855]/15 border-[#E5A855] text-white shadow-[0_0_15px_rgba(229,168,85,0.15)]"
-                                : "bg-white/[0.02] border-white/10 text-[#A7ACB4] hover:border-white/20 hover:text-white"
+                                ? "bg-[var(--accent-gold-subtle)] border-[var(--accent-gold)] text-[var(--text-primary)] font-bold shadow-sm"
+                                : "bg-[var(--surface-secondary)] border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent-gold)]/50 hover:text-[var(--text-primary)]"
                             }`}
                           >
                             {type.label}
@@ -133,7 +132,7 @@ export default function ContactClient() {
                     {/* Name & Email Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-2">
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2">
                           Your Name *
                         </label>
                         <input
@@ -142,12 +141,12 @@ export default function ContactClient() {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           placeholder="e.g. Elena Rostova"
-                          className="w-full px-4 py-3.5 rounded-xl bg-[#090A0C] border border-white/10 text-white placeholder-[#5D6470] text-sm focus:outline-none focus:border-[#E5A855] focus:ring-1 focus:ring-[#E5A855] transition-all"
+                          className="w-full px-4 py-3.5 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] placeholder-[var(--input-placeholder)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-all"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-2">
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2">
                           Email Address *
                         </label>
                         <input
@@ -156,7 +155,7 @@ export default function ContactClient() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="elena@example.com"
-                          className="w-full px-4 py-3.5 rounded-xl bg-[#090A0C] border border-white/10 text-white placeholder-[#5D6470] text-sm focus:outline-none focus:border-[#E5A855] focus:ring-1 focus:ring-[#E5A855] transition-all"
+                          className="w-full px-4 py-3.5 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] placeholder-[var(--input-placeholder)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-all"
                         />
                       </div>
                     </div>
@@ -164,35 +163,35 @@ export default function ContactClient() {
                     {/* Company & Phone Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-2">
-                          Company / Store <span className="text-[#5D6470]">(Optional)</span>
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                          Company / Store <span className="text-[var(--text-muted)]">(Optional)</span>
                         </label>
                         <input
                           type="text"
                           value={formData.company}
                           onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                           placeholder="e.g. Gourmet Pantry Co."
-                          className="w-full px-4 py-3.5 rounded-xl bg-[#090A0C] border border-white/10 text-white placeholder-[#5D6470] text-sm focus:outline-none focus:border-[#E5A855] focus:ring-1 focus:ring-[#E5A855] transition-all"
+                          className="w-full px-4 py-3.5 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] placeholder-[var(--input-placeholder)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-all"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-2">
-                          Phone Number <span className="text-[#5D6470]">(Optional)</span>
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                          Phone Number <span className="text-[var(--text-muted)]">(Optional)</span>
                         </label>
                         <input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+1 (555) 000-0000"
-                          className="w-full px-4 py-3.5 rounded-xl bg-[#090A0C] border border-white/10 text-white placeholder-[#5D6470] text-sm focus:outline-none focus:border-[#E5A855] focus:ring-1 focus:ring-[#E5A855] transition-all"
+                          className="w-full px-4 py-3.5 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] placeholder-[var(--input-placeholder)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-all"
                         />
                       </div>
                     </div>
 
                     {/* Message Box */}
                     <div>
-                      <label className="block text-xs font-mono uppercase tracking-wider text-[#858B94] mb-2">
+                      <label className="block text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] mb-2">
                         Your Message *
                       </label>
                       <textarea
@@ -201,7 +200,7 @@ export default function ContactClient() {
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder="Tell us about your distribution needs, order volume, or project..."
-                        className="w-full px-4 py-3.5 rounded-xl bg-[#090A0C] border border-white/10 text-white placeholder-[#5D6470] text-sm focus:outline-none focus:border-[#E5A855] focus:ring-1 focus:ring-[#E5A855] transition-all resize-none"
+                        className="w-full px-4 py-3.5 rounded-xl bg-[var(--input-bg)] border border-[var(--input-border)] text-[var(--text-primary)] placeholder-[var(--input-placeholder)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-all resize-none"
                       />
                     </div>
 
@@ -209,7 +208,7 @@ export default function ContactClient() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-4 px-8 bg-gradient-to-r from-[#E5A855] to-[#C96F32] hover:from-[#E5A855] hover:to-[#E5A855] text-[#0B0C0E] font-bold text-xs uppercase tracking-[0.2em] rounded-xl shadow-[0_0_25px_rgba(229,168,85,0.3)] hover:shadow-[0_0_35px_rgba(229,168,85,0.5)] transition-all duration-300 transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full py-4 px-8 bg-gradient-to-r from-[#E5A855] to-[#C96F32] hover:from-[#E5A855] hover:to-[#E5A855] text-[#0B0C0E] font-bold text-xs uppercase tracking-[0.2em] rounded-xl shadow-[0_0_25px_rgba(229,168,85,0.3)] hover:shadow-[0_0_35px_rgba(229,168,85,0.5)] transition-all duration-300 transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {isSubmitting ? (
                         <>
@@ -233,16 +232,16 @@ export default function ContactClient() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="py-12 text-center"
                   >
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-3">
                       Inquiry Received
                     </h3>
-                    <p className="text-[#A7ACB4] max-w-md mx-auto text-sm leading-relaxed mb-8">
-                      Thank you, <strong className="text-white">{formData.name}</strong>. Our culinary partnerships team will review your inquiry and reach back out at <strong className="text-white">{formData.email}</strong> shortly.
+                    <p className="text-[var(--text-secondary)] max-w-md mx-auto text-sm leading-relaxed mb-8">
+                      Thank you, <strong className="text-[var(--text-primary)]">{formData.name}</strong>. Our culinary partnerships team will review your inquiry and reach back out at <strong className="text-[var(--text-primary)]">{formData.email}</strong> shortly.
                     </p>
                     <div className="flex justify-center gap-4">
                       <button
@@ -257,13 +256,13 @@ export default function ContactClient() {
                             message: "",
                           });
                         }}
-                        className="px-6 py-3 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-mono text-white transition-colors"
+                        className="px-6 py-3 rounded-full bg-[var(--surface-secondary)] hover:bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--text-primary)] transition-colors cursor-pointer"
                       >
                         Send Another Note
                       </button>
                       <Link
                         href="/products"
-                        className="px-6 py-3 rounded-full bg-[#E5A855] text-black font-bold text-xs uppercase tracking-wider hover:bg-white transition-colors"
+                        className="px-6 py-3 rounded-full bg-[#E5A855] text-black font-bold text-xs uppercase tracking-wider hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors"
                       >
                         Explore Collection
                       </Link>
@@ -278,8 +277,8 @@ export default function ContactClient() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Direct Email Cards */}
-            <div className="p-7 rounded-3xl bg-[#111317]/60 border border-white/10 backdrop-blur-xl">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-[#858B94] mb-5">
+            <div className="p-7 rounded-3xl bg-[var(--surface-card)] border border-[var(--border)] backdrop-blur-xl shadow-[var(--shadow-card)]">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] mb-5">
                 Direct Channels
               </h3>
               
@@ -291,20 +290,20 @@ export default function ContactClient() {
                 ].map((item) => (
                   <div
                     key={item.email}
-                    className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-white/15 transition-all"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 transition-all"
                   >
                     <div>
-                      <p className="text-[11px] font-mono text-[#858B94]">{item.label}</p>
+                      <p className="text-[11px] font-mono text-[var(--text-muted)]">{item.label}</p>
                       <a
                         href={`mailto:${item.email}`}
-                        className="text-sm font-medium text-white hover:text-[#E5A855] transition-colors"
+                        className="text-sm font-medium text-[var(--text-primary)] hover:text-[var(--accent-gold)] transition-colors"
                       >
                         {item.email}
                       </a>
                     </div>
                     <button
                       onClick={() => handleCopy(item.email)}
-                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-xs font-mono text-[#A7ACB4] hover:text-white transition-colors"
+                      className="p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                       title="Copy to clipboard"
                     >
                       {copiedEmail === item.email ? "✓" : "Copy"}
@@ -321,10 +320,10 @@ export default function ContactClient() {
                   <span className="text-[10px] font-mono uppercase tracking-widest text-[#25D366] block mb-1 font-bold">
                     Instant Messaging
                   </span>
-                  <h4 className="text-base font-bold text-white mb-1">
+                  <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">
                     Chat with Us on WhatsApp
                   </h4>
-                  <p className="text-xs text-[#A7ACB4]">
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Direct chat with our culinary & sales team.
                   </p>
                 </div>
@@ -341,28 +340,28 @@ export default function ContactClient() {
             </div>
 
             {/* Headquarters & Hours */}
-            <div className="p-7 rounded-3xl bg-[#111317]/60 border border-white/10 backdrop-blur-xl">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-[#858B94] mb-4">
+            <div className="p-7 rounded-3xl bg-[var(--surface-card)] border border-[var(--border)] backdrop-blur-xl shadow-[var(--shadow-card)]">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] mb-4">
                 Headquarters
               </h3>
-              <p className="text-sm text-[#F2F2F0] leading-relaxed mb-1 font-semibold">
+              <p className="text-sm text-[var(--text-primary)] leading-relaxed mb-1 font-semibold">
                 Hebron Consumables Enterprises
               </p>
-              <p className="text-xs text-[#E5A855] font-mono mb-2">
+              <p className="text-xs text-[var(--accent-gold)] font-mono mb-2">
                 A Brand of Hebron Group
               </p>
-              <p className="text-xs text-[#858B94] leading-relaxed mb-4">
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-4">
                 Pettah, Trivandrum, Kerala – 695024, India
               </p>
-              <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-[#858B94]">
+              <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                 <span>Support Hours</span>
-                <span className="text-white font-mono">Mon – Sat / 9am – 7pm IST</span>
+                <span className="text-[var(--text-primary)] font-mono">Mon – Sat / 9am – 7pm IST</span>
               </div>
             </div>
 
             {/* Socials */}
-            <div className="p-7 rounded-3xl bg-[#111317]/60 border border-white/10 backdrop-blur-xl">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-[#858B94] mb-4">
+            <div className="p-7 rounded-3xl bg-[var(--surface-card)] border border-[var(--border)] backdrop-blur-xl shadow-[var(--shadow-card)]">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] mb-4">
                 Follow The Crunch
               </h3>
               <div className="flex gap-3">
@@ -376,7 +375,7 @@ export default function ContactClient() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-2.5 text-center rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-[#C7CBD1] hover:text-[#E5A855] transition-all"
+                    className="flex-1 py-2.5 text-center rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-elevated)] border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-all"
                   >
                     {s.name}
                   </a>

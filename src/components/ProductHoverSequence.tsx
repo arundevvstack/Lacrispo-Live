@@ -86,7 +86,7 @@ export default function ProductHoverSequence({
       {/* Signature Badge */}
       {isSignature && (
         <div className="absolute top-4 left-4 z-30 pointer-events-none">
-          <span className="bg-black/85 text-[#EAD0A1] text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border border-[#EAD0A1]/30 shadow-sm backdrop-blur-md">
+          <span className="bg-[var(--surface-card)]/90 text-[var(--accent-gold)] text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border border-[var(--accent-gold-border)] shadow-sm backdrop-blur-md">
             Signature
           </span>
         </div>

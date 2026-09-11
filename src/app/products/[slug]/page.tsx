@@ -72,7 +72,7 @@ export default async function ProductDetailPage({
   return (
     <>
       <SchemaOrg schema={productSchema} />
-      <main className="bg-black min-h-screen text-white selection:bg-[#EAD0A1] selection:text-black pt-32 pb-24">
+      <main className="bg-[var(--background)] min-h-screen text-[var(--text-primary)] selection:bg-[#EAD0A1] selection:text-black pt-32 pb-24">
         <ProductDetailClient product={product} />
       </main>
     </>

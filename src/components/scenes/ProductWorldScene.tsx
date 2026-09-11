@@ -197,34 +197,34 @@ export default function ProductWorldScene({
     <section
       ref={containerRef}
       id="product-world"
-      className="h-screen w-full relative bg-[#0B0C0E] overflow-hidden select-none"
+      className="h-screen w-full relative bg-[var(--background)] overflow-hidden select-none"
       aria-label="La Crispo Product World Experience"
     >
       {/* ================= DARK LUXURY GRAPHITE + SILVER ENVIRONMENT ================= */}
-      {/* 1. Base Dark Graphite Foundation */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#070809] via-[#0B0C0E] to-[#111317] z-0" />
+      {/* 1. Base Gradient Foundation */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[var(--lc-bg-deep)] via-[var(--background)] to-[var(--surface-secondary)] z-0" />
 
-      {/* 2. Soft Ambient Silver Specular Studio Spotlight behind the Chip */}
+      {/* 2. Soft Ambient Specular Studio Spotlight behind the Chip */}
       <div
         ref={atmosphericGlowRef}
         className="absolute inset-0 pointer-events-none z-1 flex items-center justify-center"
       >
-        <div className="w-[85vw] md:w-[65vw] h-[85vh] md:h-[65vh] rounded-full bg-[radial-gradient(circle_at_center,rgba(199,203,209,0.12)_0%,rgba(229,168,85,0.06)_30%,transparent_70%)] blur-3xl" />
+        <div className="w-[85vw] md:w-[65vw] h-[85vh] md:h-[65vh] rounded-full bg-[radial-gradient(circle_at_center,rgba(199,203,209,0.12)_0%,rgba(229,168,85,0.06)_30%,transparent_70%)] [data-theme='light']_:bg-[radial-gradient(circle_at_center,rgba(229,168,85,0.15)_0%,rgba(210,115,57,0.08)_35%,transparent_70%)] blur-3xl" />
       </div>
 
-      {/* 3. Flowing Flavour Wave Ribbons (Refined Silver & Restrained Amber Heat) */}
+      {/* 3. Flowing Flavour Wave Ribbons (Refined Silver & Restrained Amber Heat in Dark; Delicate Warm Pearl in Light) */}
       <div
         ref={flavourWaveBackRef}
-        className="absolute -top-1/4 -left-1/4 w-[150vw] h-[150vh] pointer-events-none z-1 opacity-20"
+        className="absolute -top-1/4 -left-1/4 w-[150vw] h-[150vh] pointer-events-none z-1 opacity-20 [data-theme='light']_:opacity-15"
       >
-        <div className="w-full h-full bg-[radial-gradient(ellipse_at_30%_40%,rgba(199,203,209,0.4)_0%,rgba(17,19,23,0.3)_35%,transparent_65%)] filter blur-3xl transform rotate-12" />
+        <div className="w-full h-full bg-[radial-gradient(ellipse_at_30%_40%,rgba(199,203,209,0.4)_0%,rgba(17,19,23,0.3)_35%,transparent_65%)] [data-theme='light']_:bg-[radial-gradient(ellipse_at_30%_40%,rgba(229,168,85,0.25)_0%,rgba(245,239,235,0.5)_35%,transparent_65%)] filter blur-3xl transform rotate-12" />
       </div>
 
       <div
         ref={flavourWaveFrontRef}
-        className="absolute -bottom-1/4 -right-1/4 w-[150vw] h-[150vh] pointer-events-none z-1 opacity-15"
+        className="absolute -bottom-1/4 -right-1/4 w-[150vw] h-[150vh] pointer-events-none z-1 opacity-15 [data-theme='light']_:opacity-10"
       >
-        <div className="w-full h-full bg-[radial-gradient(ellipse_at_70%_60%,rgba(201,111,50,0.3)_0%,rgba(199,203,209,0.15)_40%,transparent_70%)] filter blur-3xl transform -rotate-12" />
+        <div className="w-full h-full bg-[radial-gradient(ellipse_at_70%_60%,rgba(201,111,50,0.3)_0%,rgba(199,203,209,0.15)_40%,transparent_70%)] [data-theme='light']_:bg-[radial-gradient(ellipse_at_70%_60%,rgba(210,115,57,0.2)_0%,rgba(229,168,85,0.15)_40%,transparent_70%)] filter blur-3xl transform -rotate-12" />
       </div>
 
       {/* ================= THE HERO CHIP CANVAS SEQUENCE ================= */}
@@ -243,19 +243,19 @@ export default function ProductWorldScene({
       {/* ================= SUPPORTING BRANDING OVERLAY ================= */}
       <div
         ref={brandingGroupRef}
-        className="absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-12 md:p-16 pointer-events-none"
+        className="absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-12 md:p-16 pointer-events-none text-[var(--text-primary)]"
       >
         {/* Top Indicator Row */}
         <div className="flex items-start justify-between w-full pt-16 md:pt-12">
           <div ref={craftBadgeRef} className="opacity-90 flex flex-col gap-1">
-            <span className="text-[10px] tracking-[0.25em] text-[#C7CBD1] uppercase font-mono font-bold">
+            <span className="text-[10px] tracking-[0.25em] text-[var(--text-secondary)] uppercase font-mono font-bold">
               Hand-Cooked Kettle Crisps
             </span>
           </div>
 
-          <div className="opacity-90 hidden sm:flex items-center gap-3 px-4 py-2 rounded-full border border-[#C7CBD1]/20 bg-[#181B20]/80 backdrop-blur-md shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#E5A855]" />
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#C7CBD1] font-bold">
+          <div className="opacity-90 hidden sm:flex items-center gap-3 px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--surface-glass)] backdrop-blur-md shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[var(--accent-gold)]" />
+            <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--text-primary)] font-bold">
               Pure Sunflower Oil
             </span>
           </div>
@@ -265,14 +265,14 @@ export default function ProductWorldScene({
         <div className="w-full flex flex-col items-center justify-end text-center my-auto pt-52 sm:pt-64">
           <h1
             ref={brandTitleRef}
-            className="opacity-0 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif italic tracking-tighter text-[#F2F2F0] drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)] leading-none"
+            className="opacity-0 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif italic tracking-tighter text-[var(--text-primary)] leading-none"
           >
             La Crispo
           </h1>
 
           <p
             ref={brandSubRef}
-            className="opacity-0 mt-4 max-w-lg text-xs sm:text-sm md:text-base text-[#A7ACB4] font-medium tracking-wider leading-relaxed px-4"
+            className="opacity-0 mt-4 max-w-lg text-xs sm:text-sm md:text-base text-[var(--text-secondary)] font-medium tracking-wider leading-relaxed px-4"
           >
             Hand-selected potatoes, kettle-cooked to pristine golden crunch.
           </p>
@@ -280,7 +280,7 @@ export default function ProductWorldScene({
 
         {/* Bottom Metadata & Initial Scroll Direction */}
         <div className="flex items-end justify-between w-full pb-4">
-          <div className="text-[10px] tracking-[0.25em] uppercase text-[#858B94] font-mono font-medium hidden sm:block">
+          <div className="text-[10px] tracking-[0.25em] uppercase text-[var(--text-muted)] font-mono font-medium hidden sm:block">
             Artisan Verified Flavours
           </div>
 
@@ -289,10 +289,10 @@ export default function ProductWorldScene({
             ref={scrollCueRef}
             className="flex items-center gap-3 ml-auto opacity-90 transition-opacity duration-300 pointer-events-none"
           >
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#C7CBD1] font-mono font-bold">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-secondary)] font-mono font-bold">
               Scroll to Journal
             </span>
-            <div className="w-8 h-[1.5px] bg-gradient-to-r from-[#C7CBD1] to-transparent" />
+            <div className="w-8 h-[1.5px] bg-gradient-to-r from-[var(--text-secondary)] to-transparent" />
           </div>
         </div>
       </div>

@@ -84,7 +84,7 @@ export default function Home() {
     <>
       <SchemaOrg schema={webpageSchema} />
       <SchemaOrg schema={productGroupSchema} />
-      <main className="bg-[#0B0C0E] min-h-screen text-[#F2F2F0] selection:bg-[#C7CBD1] selection:text-[#0B0C0E]">
+      <main className="bg-[var(--background)] min-h-screen text-[var(--text-primary)] selection:bg-[#E5A855] selection:text-black">
         <PageClient frameUrls={frameUrls} />
       </main>
     </>

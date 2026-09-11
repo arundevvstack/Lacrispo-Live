@@ -9,6 +9,22 @@ import { products, Product } from "@/data/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const getProductTint = (slug: string) => {
+  if (slug.includes("banana") || slug.includes("dal") || slug.includes("tapioca")) {
+    return "var(--tint-yellow)";
+  }
+  if (slug.includes("garlic") || slug.includes("murukku") || slug.includes("mixture") || slug.includes("andhra")) {
+    return "var(--tint-pink)";
+  }
+  if (slug.includes("tomato") || slug.includes("chili") || slug.includes("pepper") || slug.includes("chilli")) {
+    return "var(--tint-orange)";
+  }
+  if (slug.includes("jackfruit") || slug.includes("salt") || slug.includes("peanut")) {
+    return "var(--tint-blue)";
+  }
+  return "var(--tint-green)";
+};
+
 export default function SpatialProductCollection() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackContainerRef = useRef<HTMLDivElement>(null);
@@ -106,7 +122,7 @@ export default function SpatialProductCollection() {
     <section
       ref={sectionRef}
       id="collection"
-      className="min-h-screen bg-[#0A0C0F] text-[#F2F2F0] relative overflow-hidden flex flex-col justify-between border-t border-[#C7CBD1]/15"
+      className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] relative overflow-hidden flex flex-col justify-between border-t border-[var(--border)]"
       aria-label="La Crispo 15-Flavor Spatial Product Collection"
     >
       {/* Dynamic Ambient Background Glows */}
@@ -117,19 +133,19 @@ export default function SpatialProductCollection() {
       {/* Section Top Header */}
       <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 pt-16 sm:pt-20 flex flex-col sm:flex-row sm:items-end justify-between gap-4 z-10">
         <div>
-          <span className="text-[#EAD0A1] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-white/5 border border-[#EAD0A1]/30 w-max">
+          <span className="text-[var(--accent-gold)] text-xs uppercase tracking-[0.3em] font-mono font-bold block mb-2 px-3 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] w-max">
             Exclusive Lineup
           </span>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-serif italic tracking-tight bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-serif italic tracking-tight bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
             Spatial Collection
           </h2>
         </div>
 
         {/* Status Indicator, Progress Bar, and Catalog Link */}
         <div className="flex items-center gap-4 sm:gap-6">
-          <div className="flex flex-col items-end gap-1.5 font-mono text-xs text-[#858B94] font-semibold">
+          <div className="flex flex-col items-end gap-1.5 font-mono text-xs text-[var(--text-muted)] font-semibold">
             <div className="flex items-center gap-2">
-              <span className="text-[#EAD0A1] font-bold">
+              <span className="text-[var(--accent-gold)] font-bold">
                 {String(activeIndex + 1).padStart(2, "0")}
               </span>
               <span>/</span>
@@ -137,9 +153,9 @@ export default function SpatialProductCollection() {
             </div>
             
             {/* Visual Mini Progress Bar */}
-            <div className="w-28 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-28 h-1 bg-[var(--border)] rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-[#EAD0A1] to-[#E5A855] transition-all duration-300 rounded-full"
+                className="h-full bg-gradient-to-r from-[var(--accent-gold)] to-[#E5A855] transition-all duration-300 rounded-full"
                 style={{ width: `${((activeIndex + 1) / products.length) * 100}%` }}
               />
             </div>
@@ -147,7 +163,7 @@ export default function SpatialProductCollection() {
 
           <Link
             href="/products"
-            className="px-6 py-2.5 rounded-full border border-[#EAD0A1]/40 bg-gradient-to-r from-[#181B20] to-[#111317] text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#F2F2F0] hover:text-[#0B0C0E] hover:from-[#EAD0A1] hover:to-[#E5A855] hover:border-[#EAD0A1] transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.6)] hover:scale-105"
+            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] font-mono font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-105 active:scale-95"
           >
             Catalog View
           </Link>
@@ -173,7 +189,7 @@ export default function SpatialProductCollection() {
                 key={product.slug}
                 onMouseMove={(e) => handleMouseMove(product.slug, e)}
                 onMouseLeave={() => handleMouseLeave(product.slug)}
-                className={`group relative flex-shrink-0 w-[240px] sm:w-[270px] md:w-[295px] rounded-[2rem] bg-gradient-to-b from-[#181B20]/95 via-[#14161B]/95 to-[#0E1013]/95 border border-white/15 p-5 sm:p-6 flex flex-col justify-between transition-all duration-500 shadow-[0_20px_45px_rgba(0,0,0,0.85)] hover:border-[#EAD0A1]/60 hover:shadow-[0_25px_55px_rgba(234,208,161,0.15)] ${
+                className={`group relative flex-shrink-0 w-[240px] sm:w-[270px] md:w-[295px] rounded-[2rem] bg-[var(--surface-card)] border border-[var(--border)] p-5 sm:p-6 flex flex-col justify-between transition-all duration-500 shadow-[var(--shadow-card)] hover:border-[var(--accent-gold)]/50 hover:shadow-[0_20px_45px_rgba(60,45,30,0.08)] ${
                   isAlternate ? "sm:translate-y-2" : "sm:-translate-y-2"
                 }`}
                 style={{
@@ -182,34 +198,36 @@ export default function SpatialProductCollection() {
                 }}
               >
                 {/* Dynamic Ambient Glow Behind Card */}
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-40 h-40 bg-[#EAD0A1]/15 rounded-full blur-2xl group-hover:opacity-100 opacity-30 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-40 h-40 bg-[var(--accent-gold)]/10 rounded-full blur-2xl group-hover:opacity-100 opacity-30 transition-opacity duration-500 pointer-events-none" />
 
                 {/* Top Card Badge */}
                 <div className="flex items-center justify-between w-full mb-2 relative z-10">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[#EAD0A1] uppercase font-bold px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
+                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent-gold)] uppercase font-bold px-2.5 py-0.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)]">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <div className="flex items-center gap-1 font-mono text-[11px] text-[#E5A855] font-bold">
+                  <div className="flex items-center gap-1 font-mono text-[11px] text-[var(--accent-gold)] font-bold">
                     <span>★</span>
-                    <span className="text-[#F2F2F0]">{product.rating.toFixed(1)}</span>
+                    <span className="text-[var(--text-primary)]">{product.rating.toFixed(1)}</span>
                   </div>
                 </div>
 
                 {/* Tactile Pack Visual with Centered Floating Perspective Effect */}
                 <div 
-                  className="relative w-full h-40 sm:h-44 md:h-48 flex items-center justify-center my-auto mx-auto"
-                  style={{ perspective: "600px", transformStyle: "preserve-3d" }}
+                  className="relative w-full h-44 sm:h-48 md:h-52 rounded-2xl flex items-center justify-center my-auto mx-auto overflow-hidden transition-all duration-500"
+                  style={{
+                    backgroundColor: getProductTint(product.slug),
+                  }}
                 >
-                  {/* Ambient Pack Halo */}
+                  {/* Subtle Center Aura Glow */}
                   <div
-                    className={`absolute inset-2 rounded-full blur-xl opacity-25 group-hover:opacity-45 transition-opacity duration-500 bg-gradient-to-tr ${
-                      product.color || "from-[#EAD0A1]/20 to-[#E5A855]/15"
+                    className={`absolute inset-3 rounded-full blur-xl opacity-35 group-hover:opacity-65 transition-opacity duration-500 bg-gradient-to-tr ${
+                      product.color || "from-[var(--accent-gold)]/20 to-[var(--accent-warm)]/15"
                     }`}
                   />
 
                   {/* 3D Floating Packet */}
                   <div 
-                    className="relative w-full h-full transform transition-transform duration-300 ease-out group-hover:scale-106 group-hover:-translate-y-1.5 will-change-transform flex items-center justify-center"
+                    className="relative w-full h-[88%] transform transition-transform duration-300 ease-out group-hover:scale-108 group-hover:-translate-y-1.5 will-change-transform flex items-center justify-center z-10"
                     style={{
                       transform: `translateZ(12px) rotateY(${tilt.x * 0.4}deg) rotateX(${tilt.y * 0.4}deg)`,
                       transformStyle: "preserve-3d",
@@ -219,7 +237,7 @@ export default function SpatialProductCollection() {
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-contain object-center drop-shadow-[0_18px_30px_rgba(0,0,0,0.9)]"
+                      className="object-contain object-center drop-shadow-[0_14px_24px_rgba(40,25,15,0.22)]"
                       sizes="(max-width: 768px) 200px, 260px"
                       priority={index < 3}
                     />
@@ -229,12 +247,12 @@ export default function SpatialProductCollection() {
                 {/* Product Meta & Description */}
                 <div className="mt-3 flex flex-col gap-2 relative z-10">
                   <div className="flex items-baseline justify-between">
-                    <h3 className="text-lg sm:text-xl font-serif italic text-[#F2F2F0] group-hover:text-[#EAD0A1] transition-colors duration-300 leading-tight">
+                    <h3 className="text-lg sm:text-xl font-serif italic text-[var(--text-primary)] group-hover:text-[var(--accent-gold)] transition-colors duration-300 leading-tight">
                       {product.name}
                     </h3>
                   </div>
 
-                  <p className="text-[11px] text-[#A7ACB4] font-normal line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-[var(--text-secondary)] font-normal line-clamp-2 leading-relaxed">
                     {product.description}
                   </p>
 
@@ -243,7 +261,7 @@ export default function SpatialProductCollection() {
                     {product.ingredients.slice(0, 3).map((ing, i) => (
                       <span
                         key={i}
-                        className="text-[8px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#C7CBD1] font-mono font-medium"
+                        className="text-[8px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)] font-mono font-medium"
                       >
                         {ing}
                       </span>
@@ -253,7 +271,7 @@ export default function SpatialProductCollection() {
                   {/* Direct Route CTA Button */}
                   <Link
                     href={`/products/${product.slug}`}
-                    className="mt-3 w-full text-center py-2.5 rounded-full bg-gradient-to-r from-white/10 to-white/5 hover:from-[#EAD0A1] hover:to-[#E5A855] hover:text-[#0B0C0E] border border-white/15 hover:border-[#EAD0A1] text-[#F2F2F0] font-mono font-bold text-[10px] uppercase tracking-[0.2em] transition-all duration-300 shadow-md block"
+                    className="mt-3 w-full text-center py-2.5 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] font-mono font-bold text-[10px] uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-[1.02] active:scale-95 block"
                   >
                     View Details
                   </Link>
@@ -265,16 +283,16 @@ export default function SpatialProductCollection() {
       </div>
 
       {/* Bottom Direction Bar */}
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 pb-8 pt-4 flex items-center justify-between border-t border-white/10 text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#858B94] font-semibold">
+      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 pb-8 pt-4 flex items-center justify-between border-t border-[var(--border)] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-muted)] font-semibold">
         <div className="flex items-center gap-3">
           <span>Crafted in small batches</span>
-          <span className="text-white/20">•</span>
-          <span className="text-[#EAD0A1]">15 Regional Flavours</span>
+          <span className="text-[var(--text-muted)]">•</span>
+          <span className="text-[var(--accent-gold)]">15 Regional Flavours</span>
         </div>
         
-        <div className="hidden sm:flex items-center gap-2 text-[#A7ACB4]">
+        <div className="hidden sm:flex items-center gap-2 text-[var(--text-secondary)]">
           <span>Scroll horizontally to explore</span>
-          <span className="text-[#EAD0A1]">→</span>
+          <span className="text-[var(--accent-gold)]">→</span>
         </div>
       </div>
     </section>

@@ -62,12 +62,12 @@ export default function BlogSection() {
   }, []);
 
   return (
-    <section id="blog" ref={sectionRef} className="py-32 px-6 bg-[#0B0C0E] text-[#F2F2F0] min-h-screen flex flex-col justify-center border-t border-[#C7CBD1]/15">
+    <section id="blog" ref={sectionRef} className="py-32 px-6 bg-[var(--background)] text-[var(--text-primary)] min-h-screen flex flex-col justify-center border-t border-[var(--border)]">
       <div className="max-w-7xl mx-auto w-full">
         
         <div className="flex items-end justify-between mb-16">
           <div>
-            <h2 className="text-5xl md:text-7xl font-serif italic bg-gradient-to-r from-[#F2F2F0] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent inline-block">
+            <h2 className="text-5xl md:text-7xl font-serif italic bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent inline-block">
               Latest News
             </h2>
           </div>
@@ -77,19 +77,19 @@ export default function BlogSection() {
           {posts.map((post, i) => (
             <article 
               key={i} 
-              className={`${post.size} group relative rounded-3xl overflow-hidden bg-[#181B20]/80 border border-[#C7CBD1]/20 p-8 flex flex-col justify-between cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.6)] hover:border-[#E6E8EB]/50 transition-all duration-300`}
+              className={`${post.size} group relative rounded-3xl overflow-hidden bg-[var(--surface-card)] border border-[var(--border)] p-8 flex flex-col justify-between cursor-pointer shadow-[var(--shadow-card)] hover:border-[var(--accent-gold)]/50 transition-all duration-300`}
               aria-labelledby={`post-title-${i}`}
             >
-              {/* Silver Specular Hover Effect */}
+              {/* Specular Hover Effect */}
               <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
               
               {/* Top Badge (if any) */}
               <div className="relative z-10 flex items-center justify-between w-full">
-                <span className="text-[#858B94] uppercase tracking-[0.2em] text-xs font-bold font-mono">
+                <span className="text-[var(--text-muted)] uppercase tracking-[0.2em] text-xs font-bold font-mono">
                   {post.category}
                 </span>
                 {post.badge && (
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold px-3 py-1 rounded-full bg-[#E5A855]/15 text-[#E5A855] border border-[#E5A855]/30">
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold px-3 py-1 rounded-full bg-[var(--accent-gold-subtle)] text-[var(--accent-gold)] border border-[var(--accent-gold-border)]">
                     {post.badge}
                   </span>
                 )}
@@ -97,10 +97,10 @@ export default function BlogSection() {
               
               {/* Bottom Content & Spice Tags */}
               <div className="relative z-10 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 flex flex-col gap-3">
-                <h3 id={`post-title-${i}`} className="text-2xl md:text-3xl text-[#F2F2F0] font-serif font-medium tracking-tight group-hover:text-[#E6E8EB] transition-colors leading-tight">
+                <h3 id={`post-title-${i}`} className="text-2xl md:text-3xl text-[var(--text-primary)] font-serif font-medium tracking-tight group-hover:text-[var(--accent-gold)] transition-colors leading-tight">
                   {post.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#A7ACB4] line-clamp-2 leading-relaxed font-light">
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-light">
                   {post.desc}
                 </p>
                 {post.tags && (
@@ -108,7 +108,7 @@ export default function BlogSection() {
                     {post.tags.map((tag, tIdx) => (
                       <span
                         key={tIdx}
-                        className="text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#C7CBD1] font-mono font-semibold"
+                        className="text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)] font-mono font-semibold"
                       >
                         {tag}
                       </span>
