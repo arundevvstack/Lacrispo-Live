@@ -3,7 +3,36 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { products, Product } from "@/data/products";
+
+const getChipsForProduct = (slug: string) => {
+  if (slug === "banana-chips") {
+    return [
+      { img: "/images/chips/banana_slice.png", top: "4%", left: "50%", rot: 15, size: "w-14 h-14 sm:w-18 sm:h-18" },
+      { img: "/images/chips/golden_crisp.png", top: "34%", left: "94%", rot: -25, size: "w-12 h-12 sm:w-16 sm:h-16" },
+      { img: "/images/chips/banana_slice.png", top: "86%", left: "76%", rot: 40, size: "w-14 h-14 sm:w-18 sm:h-18" },
+      { img: "/images/chips/golden_crisp.png", top: "86%", left: "24%", rot: -45, size: "w-13 h-13 sm:w-17 sm:h-17" },
+      { img: "/images/chips/banana_slice.png", top: "34%", left: "6%", rot: 30, size: "w-14 h-14 sm:w-18 sm:h-18" },
+    ];
+  }
+  if (slug === "andhra-murukku") {
+    return [
+      { img: "/images/chips/murukku_crisp.png", top: "4%", left: "50%", rot: 15, size: "w-14 h-14 sm:w-18 sm:h-18" },
+      { img: "/images/chips/golden_crisp.png", top: "34%", left: "94%", rot: -25, size: "w-13 h-13 sm:w-17 sm:h-17" },
+      { img: "/images/chips/murukku_crisp.png", top: "86%", left: "76%", rot: 40, size: "w-14 h-14 sm:w-18 sm:h-18" },
+      { img: "/images/chips/golden_crisp.png", top: "86%", left: "24%", rot: -45, size: "w-13 h-13 sm:w-17 sm:h-17" },
+      { img: "/images/chips/murukku_crisp.png", top: "34%", left: "6%", rot: 30, size: "w-14 h-14 sm:w-18 sm:h-18" },
+    ];
+  }
+  return [
+    { img: "/images/chips/golden_crisp.png", top: "4%", left: "50%", rot: 15, size: "w-14 h-14 sm:w-18 sm:h-18" },
+    { img: "/images/chips/banana_slice.png", top: "34%", left: "94%", rot: -25, size: "w-13 h-13 sm:w-17 sm:h-17" },
+    { img: "/images/chips/murukku_crisp.png", top: "86%", left: "76%", rot: 40, size: "w-14 h-14 sm:w-18 sm:h-18" },
+    { img: "/images/chips/golden_crisp.png", top: "86%", left: "24%", rot: -45, size: "w-13 h-13 sm:w-17 sm:h-17" },
+    { img: "/images/chips/banana_slice.png", top: "34%", left: "6%", rot: 30, size: "w-13 h-13 sm:w-17 sm:h-17" },
+  ];
+};
 
 export default function SpatialProductCollection() {
   const [mouseTilt, setMouseTilt] = useState<{ [key: string]: { x: number; y: number } }>({});
@@ -87,35 +116,75 @@ export default function SpatialProductCollection() {
                   transformStyle: "preserve-3d",
                 }}
               >
-                {/* Image Container with Elegant Gradient Background */}
+                {/* Image Container with Elegant Gradient Background and Orbiting Chips */}
                 <div 
-                  className="flex-1 relative w-full h-80 sm:h-96 lg:h-[500px] flex items-center justify-center transition-all duration-500"
+                  className="flex-1 relative w-full aspect-square max-w-md lg:max-w-[480px] min-h-[340px] sm:min-h-[420px] lg:min-h-[480px] mx-auto flex items-center justify-center transition-all duration-500"
                 >
                   {/* Subtle inner glow matching product color */}
                   <div 
-                    className={`absolute inset-0 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-all duration-700 ease-out bg-gradient-to-tr ${product.color || "from-[var(--accent-gold)] to-[var(--accent-warm)]"}`} 
+                    className={`absolute inset-4 rounded-full blur-[80px] opacity-25 group-hover:opacity-45 transition-all duration-700 ease-out bg-gradient-to-tr ${product.color || "from-[var(--accent-gold)] to-[var(--accent-warm)]"}`} 
                     style={{
                       transform: `translate(${tilt.x * 1.5}px, ${tilt.y * 1.5}px)`,
                     }}
                   />
 
-                  {/* 3D Floating Packet with Smaller, Refined Tilt */}
+                  {/* Circulating Orbit of Artisan Chips */}
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 28 + index * 4, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 rounded-full pointer-events-none z-20"
+                  >
+                    {getChipsForProduct(product.slug).map((chip, idx) => (
+                      <div
+                        key={idx}
+                        className={`absolute ${chip.size} -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_12px_24px_rgba(0,0,0,0.45)]`}
+                        style={{ top: chip.top, left: chip.left }}
+                      >
+                        <div
+                          className="relative w-full h-full"
+                          style={{ transform: `rotate(${chip.rot}deg)` }}
+                        >
+                          <Image
+                            src={chip.img}
+                            alt="Circulating Crisp"
+                            fill
+                            className="object-contain"
+                            sizes="80px"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  {/* 3D Floating Packet with Smooth Float and Refined Tilt */}
                   <div 
-                    className="relative w-full h-[90%] transform transition-transform duration-500 ease-out group-hover:scale-105 will-change-transform flex items-center justify-center z-10"
+                    className="relative w-[85%] h-[85%] transform transition-transform duration-500 ease-out will-change-transform flex items-center justify-center z-10"
                     style={{
-                      // Reduced tilt angles and Z-depth for smaller, smoother movements
                       transform: `rotateY(${tilt.x * 0.5}deg) rotateX(${tilt.y * 0.5}deg) translateZ(20px)`,
                       transformStyle: "preserve-3d",
                     }}
                   >
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-contain object-center drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)] group-hover:drop-shadow-[0_20px_40px_rgba(229,168,85,0.15)] transition-all duration-500"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      priority={true}
-                    />
+                    <motion.div
+                      animate={{
+                        y: [0, -12, 0],
+                        rotate: [0, 1.5, 0, -1.5, 0],
+                      }}
+                      transition={{
+                        duration: 5 + index * 0.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="w-full h-full relative flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform duration-500"
+                    >
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-contain object-center drop-shadow-[0_20px_45px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_25px_55px_rgba(229,168,85,0.25)] transition-all duration-500"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        priority={true}
+                      />
+                    </motion.div>
                   </div>
                 </div>
 

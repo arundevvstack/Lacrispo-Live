@@ -165,10 +165,6 @@ export default function ProductsClient() {
           {/* Ambient Studio Spotlight Glow */}
           <div className="absolute inset-2 rounded-full bg-gradient-to-tr from-[#EAD0A1]/20 via-[#C96F32]/15 to-transparent blur-3xl pointer-events-none" />
           
-          {/* Decorative Outer Aura Ring */}
-          <div className="absolute inset-8 rounded-full border border-[#EAD0A1]/15 pointer-events-none animate-spin-slow" style={{ animationDuration: "40s" }} />
-          <div className="absolute inset-16 rounded-full border border-dashed border-[var(--border)] pointer-events-none animate-spin-slow" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
-
           {/* Circulating Orbit of Artisan Chips */}
           <motion.div
             animate={{ rotate: 360 }}

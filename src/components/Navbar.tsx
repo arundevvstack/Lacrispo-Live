@@ -73,7 +73,7 @@ export default function Navbar() {
             : "-translate-y-full opacity-0"
         }`}
       >
-        <div className={`w-full mx-auto flex items-center justify-between ${isVisible ? "pointer-events-auto" : "pointer-events-none"}`}>
+        <div className={`relative w-full mx-auto flex items-center justify-between ${isVisible ? "pointer-events-auto" : "pointer-events-none"}`}>
           
           {/* Brand Wordmark (La Crispo) */}
           <Link
@@ -95,7 +95,7 @@ export default function Navbar() {
           {/* Desktop Minimalist Navigation */}
           <nav
             aria-label="Main Navigation"
-            className="hidden md:flex items-center gap-8"
+            className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
           >
             {navLinks.map((link) => {
               const isActive =
@@ -119,16 +119,8 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Direct CTA & Mobile Trigger */}
-          <div className="flex items-center gap-6">
-            <Link
-              href="/products"
-              className="hidden sm:inline-block text-[11px] uppercase tracking-[0.2em] font-bold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors duration-300 relative group py-2"
-            >
-              <span>Product Range</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[var(--text-primary)] group-hover:bg-[var(--accent)] transform origin-left transition-all duration-300 scale-x-0 group-hover:scale-x-100" />
-            </Link>
-
+          {/* Mobile Trigger */}
+          <div className="flex items-center md:hidden">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
