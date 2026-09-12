@@ -18,7 +18,6 @@ export default function PageClient({ frameUrls }: { frameUrls: string[] }) {
 
   return (
     <SmoothScroll>
-      <Navbar />
       <LoadingScreen progress={progress} isReady={isReady} />
 
       {/* PHASE 1 VERTICAL SLICE: 3D / Depth Scroll-Driven Brand Experience */}

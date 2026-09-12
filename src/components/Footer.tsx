@@ -42,12 +42,12 @@ export default function Footer() {
     <footer
       id="contact"
       ref={footerRef}
-      className="relative bg-[var(--surface-secondary)] text-[var(--text-primary)] pt-24 pb-16 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-[var(--border)]"
+      className="relative bg-[var(--surface-secondary)] text-[var(--text-primary)] pt-24 pb-16 px-6 sm:px-12 lg:px-24 xl:px-32 overflow-hidden border-t border-[var(--border)]"
     >
       {/* Subtle Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#E5A855]/10 blur-[140px] pointer-events-none rounded-full" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full max-w-[2000px] mx-auto relative z-10">
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-20 items-start">
           

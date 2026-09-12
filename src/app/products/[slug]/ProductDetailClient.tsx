@@ -4,10 +4,25 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/data/products";
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const [activeTab, setActiveTab] = useState<"ingredients" | "nutrition">("ingredients");
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setTilt({
+      x: -(y / rect.height) * 40, 
+      y: (x / rect.width) * 40,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 overflow-hidden">
@@ -32,57 +47,51 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex-1 w-full max-w-2xl mx-auto lg:mx-0 relative aspect-square"
+          className="flex-1 w-full max-w-2xl mx-auto lg:mx-0 relative aspect-square flex items-center justify-center cursor-pointer group"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ perspective: "1500px" }}
         >
-          {/* Subtle glowing silver backdrop aura on hover */}
-          <div className="absolute inset-0 rounded-full blur-3xl opacity-20 group-hover:opacity-60 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(230,232,235,0.25)_0%,rgba(199,203,209,0.08)_50%,transparent_75%)] pointer-events-none" />
+          {/* Interactive Floating Glow */}
+          <div 
+            className="absolute inset-0 rounded-full blur-[100px] opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none" 
+            style={{
+               background: `radial-gradient(circle at center, #E5A855 0%, transparent 70%)`,
+               transform: `translate3d(${tilt.y * -2}px, ${tilt.x * -2}px, -100px)`
+            }}
+          />
           
-          <div className="absolute inset-4 md:inset-8 rounded-[2.5rem] bg-[var(--surface-card)] backdrop-blur-xl overflow-hidden shadow-[var(--shadow-card)] flex flex-col items-center justify-center p-8 lg:p-12 border border-[var(--border)] hover:border-[var(--accent-gold)]/50 transition-all duration-700 cursor-pointer">
-            
-            {/* 1. Minimal Silver Ambient Background Light */}
-            <div className="absolute inset-4 rounded-full bg-[radial-gradient(circle_at_center,rgba(230,232,235,0.20)_0%,rgba(199,203,209,0.06)_45%,transparent_70%)] opacity-30 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-2xl" />
-
-            {/* 2. Outer Minimal Silver Collect Orbit Ring */}
-            <div className="absolute w-[82%] h-[82%] rounded-full border border-[#E6E8EB]/30 opacity-0 group-hover:opacity-90 scale-110 group-hover:scale-95 group-hover:rotate-45 transition-all duration-700 ease-out pointer-events-none" />
-
-            {/* 3. Inner Minimal Silver Dashed Orbit Ring */}
-            <div className="absolute w-[68%] h-[68%] rounded-full border border-dashed border-[var(--border)] opacity-0 group-hover:opacity-80 scale-120 group-hover:scale-100 group-hover:-rotate-90 transition-all duration-1000 ease-out pointer-events-none" />
-
-            {/* 4. Converging Minimal Silver Collect Corner Reticles */}
-            <div className="absolute inset-8 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105 group-hover:scale-95">
-              <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#E6E8EB]/80 rounded-tl-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
-              <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-[#E6E8EB]/80 rounded-tr-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
-              <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-[#E6E8EB]/80 rounded-bl-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
-              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#E6E8EB]/80 rounded-br-sm shadow-[0_0_10px_rgba(230,232,235,0.5)]" />
+          {/* 3D Tilted Image Container */}
+          <div 
+            className="relative w-full h-[90%] flex items-center justify-center z-10 transition-transform duration-200 ease-out will-change-transform"
+            style={{
+              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.05)`,
+              transformStyle: "preserve-3d"
+            }}
+          >
+            <div 
+              className="relative w-full h-full drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_35px_60px_rgba(255,255,255,0.15)] group-hover:brightness-110 transition-all duration-300" 
+              style={{ transform: "translateZ(60px)" }}
+            >
+              <Image 
+                src={product.image} 
+                alt={product.name} 
+                fill 
+                className="object-contain" 
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
-
-            {/* 5. Four Minimal Silver Orbit Nodes */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <div className="relative w-[75%] h-[75%] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
-                <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#E6E8EB] shadow-[0_0_10px_#E6E8EB]" />
-              </div>
-            </div>
-
-            {/* Main Product Packet */}
-            <div className="relative w-full h-[90%] flex items-center justify-center z-10">
-              <div className="relative w-full h-full transform group-hover:-translate-y-2 group-hover:scale-106 transition-all duration-700 ease-out drop-shadow-[0_25px_50px_rgba(0,0,0,0.35)] group-hover:drop-shadow-[0_0_35px_rgba(230,232,235,0.35)] group-hover:brightness-110">
-                <Image 
-                  src={product.image} 
-                  alt={product.name} 
-                  fill 
-                  className="object-contain" 
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-            </div>
-
-            {/* Ground Specular Reflection Shadow */}
-            <div className="w-1/2 h-3 bg-black/20 blur-md rounded-full mt-2 transform group-hover:scale-75 group-hover:opacity-30 transition-all duration-700" />
           </div>
+
+          {/* Dynamic Ground Shadow */}
+          <div 
+            className="absolute bottom-10 w-1/2 h-4 bg-black/60 blur-xl rounded-full transition-all duration-300 pointer-events-none"
+            style={{
+              transform: `translate3d(${tilt.y * -1.5}px, ${Math.max(0, tilt.x * 2)}px, -50px) scale(${1 - Math.abs(tilt.x)/80})`,
+              opacity: 1 - Math.abs(tilt.x)/40
+            }}
+          />
         </motion.div>
 
         {/* Right Column: Product Details */}

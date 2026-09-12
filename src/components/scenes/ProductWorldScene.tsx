@@ -121,8 +121,8 @@ export default function ProductWorldScene({
         // Stage 02 -> 03: The Flavour Wave parts as the Chip Emerges & Scales (0.00 -> 0.40)
         tl.fromTo(
           canvasContainerRef.current,
-          { scale: isMobile ? 0.88 : 0.86, opacity: 0.95, y: isMobile ? 20 : 30 },
-          { scale: isMobile ? 1.02 : 1.08, opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
+          { scale: 1, opacity: 1, y: 0 },
+          { scale: 1.05, opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
           0.0
         );
 
@@ -243,22 +243,13 @@ export default function ProductWorldScene({
       {/* ================= SUPPORTING BRANDING OVERLAY ================= */}
       <div
         ref={brandingGroupRef}
-        className="absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-12 md:p-16 pointer-events-none text-[var(--text-primary)]"
+        className="absolute inset-0 z-10 flex flex-col justify-between px-6 sm:px-10 py-6 sm:py-10 pointer-events-none text-[var(--text-primary)]"
       >
         {/* Top Indicator Row */}
-        <div className="flex items-start justify-between w-full pt-16 md:pt-12">
-          <div ref={craftBadgeRef} className="opacity-90 flex flex-col gap-1">
-            <span className="text-[10px] tracking-[0.25em] text-[var(--text-secondary)] uppercase font-mono font-bold">
-              Hand-Cooked Kettle Crisps
-            </span>
-          </div>
+        <div className="flex items-start justify-between w-full pt-20 sm:pt-16">
+          <div />
 
-          <div className="opacity-90 hidden sm:flex items-center gap-3 px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--surface-glass)] backdrop-blur-md shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[var(--accent-gold)]" />
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--text-primary)] font-bold">
-              Pure Sunflower Oil
-            </span>
-          </div>
+          <div />
         </div>
 
         {/* Minimal Supporting Wordmark (Understated, behind & below the chip focus) */}
@@ -280,9 +271,7 @@ export default function ProductWorldScene({
 
         {/* Bottom Metadata & Initial Scroll Direction */}
         <div className="flex items-end justify-between w-full pb-4">
-          <div className="text-[10px] tracking-[0.25em] uppercase text-[var(--text-muted)] font-mono font-medium hidden sm:block">
-            Artisan Verified Flavours
-          </div>
+          <div />
 
           {/* Initial Scroll Cue */}
           <div

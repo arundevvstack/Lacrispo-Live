@@ -77,7 +77,7 @@ export default function ProductsClient() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 overflow-hidden">
+    <div className="w-full px-6 sm:px-12 lg:px-24 xl:px-32 relative z-10 overflow-hidden max-w-[2000px] mx-auto">
       
       {/* Dynamic Ambient Background Orbs */}
       <div className="absolute top-10 left-1/4 w-[450px] h-[450px] bg-[#EAD0A1]/10 rounded-full blur-[120px] pointer-events-none -z-10" />
@@ -236,7 +236,7 @@ export default function ProductsClient() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative bg-[var(--surface-card)] backdrop-blur-2xl border border-[var(--border)] rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 my-16 sm:my-24 shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden"
+        className="relative py-10 my-16 sm:my-24 overflow-hidden"
       >
         <div className="absolute top-0 right-1/4 w-72 h-36 bg-[#EAD0A1]/10 blur-[80px] pointer-events-none rounded-full" />
 
@@ -293,16 +293,13 @@ export default function ProductsClient() {
             <motion.article key={flavor.slug} variants={itemVariants}>
               <Link
                 href={`/products/${flavor.slug}`}
-                className="group relative block bg-[var(--surface-card)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 rounded-[2.25rem] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_45px_rgba(60,45,30,0.08)] cursor-pointer overflow-hidden"
+                className="group relative block p-6 sm:p-7 transition-all duration-500 hover:-translate-y-2 cursor-pointer overflow-hidden"
               >
                 {/* Dynamic Ambient Card Backlight */}
                 <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 bg-[var(--accent-gold)]/10 rounded-full blur-3xl group-hover:opacity-100 opacity-40 transition-opacity duration-500 pointer-events-none" />
 
                 <div 
                   className="w-full rounded-2xl p-3 flex justify-center mb-4 relative z-10 overflow-hidden transition-all duration-500"
-                  style={{
-                    backgroundColor: getProductTint(flavor.slug),
-                  }}
                 >
                   <ProductHoverSequence
                     image={flavor.image}
@@ -413,7 +410,7 @@ export default function ProductsClient() {
               >
                 <Link
                   href={`/products/${item.slug}`}
-                  className="relative bg-[var(--surface-card)] border border-[var(--border)] hover:border-[var(--accent-gold)]/50 rounded-3xl p-5 sm:p-6 flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_16px_36px_rgba(60,45,30,0.08)] group h-full cursor-pointer overflow-hidden"
+                  className="relative p-5 sm:p-6 flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-1.5 group h-full cursor-pointer overflow-hidden"
                 >
                   {/* Ambient Glow Spotlight Behind Product Image */}
                   <div className="absolute top-16 left-1/2 -translate-x-1/2 w-32 h-32 bg-[var(--accent-gold)]/10 rounded-full blur-2xl group-hover:opacity-100 opacity-30 transition-opacity duration-300 pointer-events-none" />
@@ -421,9 +418,6 @@ export default function ProductsClient() {
                   {/* Snack Sequence Showcase with Soft Tint Stage */}
                   <div 
                     className="w-full rounded-2xl p-2.5 flex justify-center mb-4 relative z-10 overflow-hidden transition-all duration-500"
-                    style={{
-                      backgroundColor: getProductTint(item.slug),
-                    }}
                   >
                     <ProductHoverSequence
                       image={item.image}

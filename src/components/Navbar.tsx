@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -64,36 +65,37 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Floating Header Container with Timed Scroll Auto-Hide & 10s Reappearance */}
+      {/* Minimalist Transparent Header */}
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] py-4 sm:py-6 px-4 sm:px-8 pointer-events-none ${
+        className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] py-6 px-6 sm:px-12 lg:px-24 xl:px-32 pointer-events-none ${
           isVisible
             ? "translate-y-0 opacity-100"
-            : "-translate-y-28 opacity-0"
+            : "-translate-y-full opacity-0"
         }`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between ${isVisible ? "pointer-events-auto" : "pointer-events-none"}`}>
+        <div className={`w-full mx-auto flex items-center justify-between ${isVisible ? "pointer-events-auto" : "pointer-events-none"}`}>
           
           {/* Brand Wordmark (La Crispo) */}
           <Link
             href="/"
-            className="group flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--surface-glass)] backdrop-blur-xl border border-[var(--border)] hover:border-[var(--border-strong)] transition-all duration-300 shadow-[var(--shadow-card)]"
+            className="group flex items-center gap-3 transition-opacity duration-300 hover:opacity-80"
             aria-label="La Crispo Home"
           >
-            <span className="w-2 h-2 rounded-full bg-[#C96F32] animate-pulse" />
-            <span className="text-sm sm:text-base font-serif italic tracking-[0.2em] uppercase text-[var(--text-primary)] font-bold group-hover:text-[var(--accent)] transition-colors">
-              La Crispo
-            </span>
+            <div className="relative w-32 h-10 sm:w-40 sm:h-12 flex items-center">
+              <Image 
+                src="/logo-crispo-logo.png" 
+                alt="La Crispo" 
+                fill 
+                className="object-contain object-left" 
+                priority 
+              />
+            </div>
           </Link>
 
-          {/* Desktop Floating Navigation Pill (Title Bars) */}
+          {/* Desktop Minimalist Navigation */}
           <nav
             aria-label="Main Navigation"
-            className={`hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all duration-500 shadow-[var(--shadow-card)] ${
-              scrolled
-                ? "bg-[var(--surface-glass-solid)] backdrop-blur-2xl border-[var(--border-strong)]"
-                : "bg-[var(--surface-glass)] backdrop-blur-xl border-[var(--border)]"
-            }`}
+            className="hidden md:flex items-center gap-8"
           >
             {navLinks.map((link) => {
               const isActive =
@@ -104,38 +106,39 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] font-semibold rounded-full transition-all duration-200 ${
+                  className={`text-[11px] uppercase tracking-[0.2em] font-semibold transition-colors duration-300 relative group py-2 ${
                     isActive
-                      ? "text-[var(--accent)] bg-[var(--border-subtle)]"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]"
+                      ? "text-[var(--accent)]"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   }`}
                 >
                   {link.name}
+                  <span className={`absolute bottom-0 left-0 w-full h-[1px] bg-[var(--accent)] transform origin-left transition-transform duration-300 ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
                 </Link>
               );
             })}
           </nav>
 
-          {/* Direct CTA / Product Range Button & Mobile Trigger */}
-          <div className="flex items-center gap-2.5">
+          {/* Direct CTA & Mobile Trigger */}
+          <div className="flex items-center gap-6">
             <Link
               href="/products"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] text-[11px] font-bold uppercase tracking-[0.2em] shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-105 active:scale-95 transition-all duration-300 group"
+              className="hidden sm:inline-block text-[11px] uppercase tracking-[0.2em] font-bold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors duration-300 relative group py-2"
             >
               <span>Product Range</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[var(--text-primary)] group-hover:bg-[var(--accent)] transform origin-left transition-all duration-300 scale-x-0 group-hover:scale-x-100" />
             </Link>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full bg-[var(--surface-glass)] backdrop-blur-xl border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+              className="md:hidden flex flex-col items-end justify-center w-8 h-8 text-[var(--text-primary)] focus:outline-none group"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
             >
-              <span className={`w-4 h-[1.5px] bg-[var(--text-primary)] transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[3.5px]" : "-translate-y-1"}`} />
-              <span className={`w-4 h-[1.5px] bg-[var(--text-primary)] transition-opacity duration-300 ${menuOpen ? "opacity-0" : "opacity-100"}`} />
-              <span className={`w-4 h-[1.5px] bg-[var(--text-primary)] transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[3.5px]" : "translate-y-1"}`} />
+              <span className={`h-[1.5px] bg-current transition-all duration-300 ${menuOpen ? "w-6 rotate-45 translate-y-[5px]" : "w-6 mb-1.5 group-hover:w-4"}`} />
+              <span className={`h-[1.5px] bg-current transition-all duration-300 ${menuOpen ? "w-6 -rotate-45 -translate-y-[2.5px]" : "w-4 group-hover:w-6"}`} />
             </button>
           </div>
         </div>

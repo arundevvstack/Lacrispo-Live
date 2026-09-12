@@ -15,7 +15,7 @@ export default function Home() {
   let frameUrls: string[] = [];
   
   try {
-    const publicHomeDir = path.join(process.cwd(), "public", "home");
+    const publicHomeDir = path.join(process.cwd(), "public", "home_banner");
     
     // Check if directory exists
     if (fs.existsSync(publicHomeDir)) {
@@ -31,9 +31,9 @@ export default function Home() {
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
       });
 
-      frameUrls = imageFiles.map(file => `/home/${file}`);
+      frameUrls = imageFiles.map(file => `/home_banner/${file}`);
     } else {
-      console.warn("Directory public/home does not exist. Please add image frames for the sequence.");
+      console.warn("Directory public/home_banner does not exist. Please add image frames for the sequence.");
     }
   } catch (error) {
     console.error("Failed to read image frames directory:", error);

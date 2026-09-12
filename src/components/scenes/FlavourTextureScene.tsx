@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { products } from "@/data/products";
+import Particles from "./Particles";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,6 +51,7 @@ const flavourThemesLight = [
 const anatomyProducts = products.map((p, idx) => ({
   slug: p.slug,
   name: p.name,
+  description: p.description,
   image: p.image,
   ingredients: p.ingredients,
   nutrition: {
@@ -90,16 +92,41 @@ export default function FlavourTextureScene() {
     return () => mobileMq.removeEventListener("change", onMobileChange);
   }, []);
 
-  // 3D Circular Ring Rotation & Scroll-Driven Center Spotlight Engine
+  // 3D Mouse Parallax Effect
+  useEffect(() => {
+    if (isMobile) return; // Disable on mobile for performance and UX
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!stage3dRef.current) return;
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 2; // -1 to 1
+      const y = (e.clientY / innerHeight - 0.5) * 2; // -1 to 1
+
+      gsap.to(stage3dRef.current, {
+        rotationY: x * 15,
+        rotationX: -y * 15,
+        x: x * -20,
+        y: y * -20,
+        transformPerspective: 1400,
+        transformOrigin: "center center",
+        duration: 1.2,
+        ease: "power2.out",
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isMobile]);
+
+  // Slide Rotation & Scroll-Driven Center Spotlight Engine
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const ctx = gsap.context(() => {
       const N = anatomyProducts.length; // 15 authentic packets
-      const STEP_DEG = 360 / N; // 24 degrees per step
 
-      const renderRingLayout = (progress: number) => {
+      const renderSlideLayout = (progress: number) => {
         const currentStep = progress * (N - 1);
         const activeIdx = Math.min(Math.max(Math.round(currentStep), 0), N - 1);
         setActiveFlavourIndex(activeIdx);
@@ -118,10 +145,8 @@ export default function FlavourTextureScene() {
           spotlightGlowRef.current.style.background = `radial-gradient(circle at center, ${currentTheme.spotlightGlow} 0%, transparent 70%)`;
         }
 
-        // Geometry radii for the 3D circular ring orbit
-        const rx = isMobile ? 160 : 340; // Horizontal circle radius
-        const ry = isMobile ? 55 : 100;  // Vertical perspective radius
-        const rz = isMobile ? 110 : 200; // 3D depth radius
+        // Horizontal slide distance between items
+        const rx = isMobile ? 220 : 420;
 
         anatomyProducts.forEach((_, i) => {
           const el = packRefs.current[i];
@@ -130,41 +155,33 @@ export default function FlavourTextureScene() {
           const stepDelta = i - currentStep;
           const absStepDelta = Math.abs(stepDelta);
 
-          const angleDeg = stepDelta * STEP_DEG;
-          const angleRad = (angleDeg * Math.PI) / 180;
+          // Horizontal translation
+          const x = stepDelta * rx;
+          const y = isMobile ? 10 : 20;
 
-          const xRing = rx * Math.sin(angleRad);
-          const yRing = -ry * Math.cos(angleRad) + (isMobile ? 10 : 15);
-          const zRing = -rz * (1 - Math.cos(angleRad));
-
+          // Smooth focus scale for the center active item
           const focusT = Math.max(0, 1 - absStepDelta);
-          const s = focusT * focusT * (3 - 2 * focusT);
+          const s = focusT * focusT * (3 - 2 * focusT); 
 
-          const x = xRing * (1 - s);
-          const y = yRing * (1 - s);
-          const z = zRing * (1 - s) + (isMobile ? 35 : 75) * s;
+          const activeScale = isMobile ? 1.05 : 1.30;
+          const inactiveScale = isMobile ? 0.70 : 0.80;
+          const scale = inactiveScale + (activeScale - inactiveScale) * s;
 
-          const ringScale = isMobile ? 0.40 : 0.48;
-          const activeScale = isMobile ? 1.02 : 1.20;
-          const scale = ringScale * (1 - s) + activeScale * s;
+          // Opacity falls off for items further away from center
+          const opacity = Math.max(0, 1 - absStepDelta * 0.55);
 
-          const depthFactor = (Math.cos(angleRad) + 1) / 2;
-          const ringOpacity = 0.35 + depthFactor * 0.35;
-          const opacity = ringOpacity * (1 - s) + 1.0 * s;
-
-          const rotY = (angleDeg * 0.40) * (1 - s);
-          const rotZ = (Math.sin(angleRad) * -6) * (1 - s);
+          const rotZ = stepDelta * 2; // Slight natural tilt based on position
 
           const shadowBlur = Math.round(15 + s * 40);
           const shadowSpread = Math.round(8 + s * 20);
-          const shadowAlpha = 0.4 + s * 0.45;
-          const brightness = 0.8 + s * 0.35;
+          const shadowAlpha = 0.2 + s * 0.25;
+          const brightness = 0.5 + s * 0.5;
 
-          const zIndex = s > 0.35 ? 50 : Math.round(10 + depthFactor * 20);
+          const zIndex = 50 - Math.round(absStepDelta * 10);
 
           el.style.opacity = `${opacity}`;
           el.style.zIndex = `${zIndex}`;
-          el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`;
+          el.style.transform = `translate3d(${x}px, ${y}px, 0px) rotateZ(${rotZ}deg) scale(${scale})`;
           el.style.filter = `brightness(${brightness}) drop-shadow(0 ${shadowSpread}px ${shadowBlur}px rgba(0,0,0,${shadowAlpha}))`;
           el.style.pointerEvents = s > 0.4 ? "auto" : "none";
         });
@@ -206,9 +223,9 @@ export default function FlavourTextureScene() {
       }
 
       // Initial render pass
-      renderRingLayout(0);
+      renderSlideLayout(0);
 
-      // ScrollTrigger locking scroll to smooth 3D circular ring rotation
+      // ScrollTrigger locking scroll to smooth slide interaction
       ScrollTrigger.create({
         trigger: container,
         start: "top top",
@@ -217,7 +234,7 @@ export default function FlavourTextureScene() {
         scrub: 0.9,
         anticipatePin: 1,
         onUpdate: (self) => {
-          renderRingLayout(self.progress);
+          renderSlideLayout(self.progress);
         },
       });
     }, container);
@@ -239,7 +256,7 @@ export default function FlavourTextureScene() {
     <section
       ref={containerRef}
       id="flavours"
-      className="min-h-screen w-full relative bg-[var(--background)] overflow-hidden text-[var(--text-primary)] select-none transition-colors duration-500 ease-out flex items-center justify-center py-20 lg:py-0"
+      className="min-h-screen w-full relative bg-[var(--background)] overflow-hidden text-[var(--text-primary)] select-none transition-colors duration-500 ease-out flex flex-col justify-center items-center py-20 lg:py-0"
       aria-label="La Crispo Anatomy of the Crunch"
     >
       {/* Dynamic Ambient Background Glow */}
@@ -261,10 +278,9 @@ export default function FlavourTextureScene() {
       <div className="absolute top-12 left-8 w-64 h-64 bg-[#C46227]/05 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-16 right-12 w-80 h-80 bg-[#AC6F1E]/06 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Decorative Circular Orbit Ring Guide Line */}
+      {/* Decorative Slide Guide Line */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[680px] md:w-[740px] h-[130px] sm:h-[230px] md:h-[250px] rounded-[50%] border border-white/10 [data-theme='light']_:border-[var(--border-strong)] pointer-events-none opacity-30 -rotate-3" 
-        style={{ boxShadow: "0 0 40px rgba(229,168,85,0.04)" }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[1px] bg-white/5 [data-theme='light']_:bg-black/5 pointer-events-none opacity-50" 
       />
 
       {/* Central Spotlight Glow Behind the Active Hero Packet */}
@@ -276,82 +292,51 @@ export default function FlavourTextureScene() {
         }}
       />
 
-      {/* Main Visual Layout */}
-      <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col justify-between py-12 sm:py-16">
+      <Particles count={40} layer="background" className="z-0 opacity-70" />
+
+      {/* ================= TOP SECTION HEADER ================= */}
+      <div className="absolute top-10 sm:top-14 lg:top-16 left-0 right-0 z-30 flex flex-col items-center text-center px-6 pointer-events-none">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface-glass-solid)] backdrop-blur-md border border-[var(--border)] text-[10px] sm:text-xs font-mono font-bold uppercase tracking-[0.25em] text-[var(--accent-gold)] shadow-[var(--shadow-sm)] mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-gold)]" />
+          <span>15 FLAVOURS</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic tracking-tight leading-tight mb-3 bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
+          Anatomy of the Crunch
+        </h2>
+        <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] font-normal max-w-sm sm:max-w-md">
+          Different flavours. A common love. Crafted for every craving.
+        </p>
+      </div>
+
+      {/* ================= MAIN VISUAL LAYOUT (LEFT CARD + SLIDER + RIGHT CARD) ================= */}
+      <div className="relative z-10 w-full h-full max-w-[1500px] mx-auto flex items-center justify-center">
         
-        {/* ================= TOP-LEFT HEADER CONTENT AREA ================= */}
+        {/* LEFT DYNAMIC PRODUCT DESCRIPTION CARD */}
         <div
           ref={leftContentRef}
-          className="lg:absolute lg:top-14 xl:lg:top-16 lg:left-10 xl:lg:left-14 max-w-md sm:max-w-lg lg:max-w-xl flex flex-col justify-start text-left z-20 pt-4 lg:pt-0"
+          className="hidden md:flex absolute left-6 lg:left-24 xl:left-32 bottom-24 lg:bottom-28 z-30 flex-col items-start pointer-events-auto"
         >
-          
-          {/* 15 FLAVOURS Label Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-[10px] sm:text-xs font-mono font-bold uppercase tracking-[0.25em] text-[var(--accent-gold)] shadow-sm mb-3 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-gold)]" />
-            <span>15 FLAVOURS</span>
-          </div>
-
-          {/* Large Editorial Heading at Top - Matching Spatial Collection Color Gradient */}
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif italic tracking-tight leading-tight mb-3 whitespace-nowrap bg-gradient-to-r from-[var(--text-primary)] via-[#E5A855] to-[#C96F32] bg-clip-text text-transparent">
-            Anatomy of the Crunch
-          </h2>
-
-          {/* Supporting Text Description at Top */}
-          <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] font-normal leading-relaxed max-w-sm sm:max-w-md mb-2">
-            Different flavours. A common love. Crafted for every craving.
-          </p>
-
-          {/* Three Benefit Items Stacked Vertically - Larger & Positioned Further Down */}
-          <div className="flex flex-col gap-4 sm:gap-5 md:gap-6 mt-6 sm:mt-8 lg:mt-10">
-            <div className="flex items-center gap-3.5 sm:gap-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[var(--surface-secondary)] border border-[var(--border-strong)] flex items-center justify-center text-[var(--accent-gold)] text-xs sm:text-sm font-mono font-bold shadow-sm shrink-0">
-                01
-              </div>
-              <div className="flex flex-col">
-                <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[var(--text-primary)] leading-snug">
-                  PREMIUM
-                </p>
-                <p className="text-[11px] sm:text-xs font-mono font-medium tracking-wider text-[var(--text-secondary)] uppercase">
-                  INGREDIENTS
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 sm:gap-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[var(--surface-secondary)] border border-[var(--border-strong)] flex items-center justify-center text-[var(--accent-gold)] text-xs sm:text-sm font-mono font-bold shadow-sm shrink-0">
-                02
-              </div>
-              <div className="flex flex-col">
-                <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[var(--text-primary)] leading-snug">
-                  AUTHENTIC TASTE
-                </p>
-                <p className="text-[11px] sm:text-xs font-mono font-medium tracking-wider text-[var(--text-secondary)] uppercase">
-                  EVERYTIME
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 sm:gap-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[var(--surface-secondary)] border border-[var(--border-strong)] flex items-center justify-center text-[var(--accent-gold)] text-xs sm:text-sm font-mono font-bold shadow-sm shrink-0">
-                03
-              </div>
-              <div className="flex flex-col">
-                <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[var(--text-primary)] leading-snug">
-                  SNACKING
-                </p>
-                <p className="text-[11px] sm:text-xs font-mono font-medium tracking-wider text-[var(--text-secondary)] uppercase">
-                  HAPPIER LIVES
-                </p>
-              </div>
+          <div className="w-[260px] lg:w-[320px] p-6 lg:p-8 rounded-3xl bg-black/10 [data-theme='light']_:bg-white/40 backdrop-blur-3xl border border-white/10 [data-theme='light']_:border-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex flex-col gap-3 transition-all duration-500 overflow-hidden relative group">
+            {/* Subtle inner highlight */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="relative z-10 flex flex-col gap-3">
+              <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-[var(--text-primary)] opacity-60 font-bold">
+                Signature Product
+              </span>
+              <h3 className="text-3xl lg:text-4xl font-serif italic text-[var(--text-primary)] font-bold tracking-tight leading-tight">
+                {activeProduct.name}
+              </h3>
+              <div className="w-12 h-[1px] bg-gradient-to-r from-[var(--text-primary)] to-transparent opacity-30 mt-1 mb-2" />
+              <p className="text-[13px] lg:text-sm text-[var(--text-primary)] opacity-80 leading-relaxed font-light">
+                {activeProduct.description}
+              </p>
             </div>
           </div>
-
         </div>
 
-        {/* ================= CENTER PRODUCT LINEUP PRESENTATION ================= */}
+        {/* CENTER PRODUCT LINEUP SLIDER */}
         <div className="relative flex-1 flex flex-col items-center justify-center my-auto min-h-[360px] sm:min-h-[440px] md:min-h-[500px]">
-          
-          {/* 3D Circular Ring Stage: All 15 Authentic Packets orbiting around the Central Hero Packet */}
           <div
             ref={stage3dRef}
             className="relative w-[200px] h-[300px] sm:w-[240px] sm:h-[360px] md:w-[280px] md:h-[420px] flex items-center justify-center z-10 will-change-transform mt-4"
@@ -366,111 +351,122 @@ export default function FlavourTextureScene() {
                 className="absolute inset-0 flex items-center justify-center pointer-events-none will-change-transform transition-opacity duration-300"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="relative w-full h-full flex items-center justify-center">
+                <Link href={`/products/${prod.slug}`} className="relative w-full h-full flex items-center justify-center pointer-events-auto cursor-pointer group">
                   <Image
                     src={prod.image}
                     alt={prod.name}
                     fill
-                    className="object-contain drop-shadow-[0_16px_30px_rgba(0,0,0,0.35)]"
+                    className="object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.4)] group-hover:drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] group-hover:brightness-110 transition-all duration-300"
                     sizes="(max-width: 768px) 260px, (max-width: 1200px) 380px, 440px"
                     priority={idx < 4}
                   />
-                </div>
+                </Link>
               </div>
             ))}
           </div>
+        </div>
 
+        {/* RIGHT NUTRITION & INGREDIENTS CARD */}
+        <div
+          ref={infoCardRef}
+          className="hidden md:flex absolute right-6 lg:right-24 xl:right-32 bottom-24 lg:bottom-28 z-30 flex-col items-end pointer-events-auto"
+        >
+          <div className="w-[260px] lg:w-[320px] p-6 lg:p-8 rounded-3xl bg-black/10 [data-theme='light']_:bg-white/40 backdrop-blur-3xl border border-white/10 [data-theme='light']_:border-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex flex-col gap-5 transition-all duration-500 overflow-hidden relative group">
+            {/* Subtle inner highlight */}
+            <div className="absolute inset-0 bg-gradient-to-bl from-white/10 to-transparent opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="relative z-10 flex flex-col gap-5 w-full">
+              {/* Top Navigation Row */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 [data-theme='light']_:border-black/5">
+                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[var(--text-primary)] opacity-60 font-bold">
+                  <span className="text-[var(--text-primary)] opacity-100">{String(activeFlavourIndex + 1).padStart(2, "0")}</span> / 15
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handlePrev}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-white/5 [data-theme='light']_:bg-black/5 hover:bg-white/10 [data-theme='light']_:hover:bg-black/10 border border-white/10 [data-theme='light']_:border-black/5 flex items-center justify-center text-xs text-[var(--text-primary)] transition-all cursor-pointer hover:scale-105 active:scale-95"
+                    aria-label="Previous Flavour"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-white/5 [data-theme='light']_:bg-black/5 hover:bg-white/10 [data-theme='light']_:hover:bg-black/10 border border-white/10 [data-theme='light']_:border-black/5 flex items-center justify-center text-xs text-[var(--text-primary)] transition-all cursor-pointer hover:scale-105 active:scale-95"
+                    aria-label="Next Flavour"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+
+              {/* Product Ingredients Section */}
+              <div>
+                <span className="text-[9px] uppercase font-mono tracking-[0.2em] text-[var(--text-primary)] opacity-60 font-bold block mb-2">
+                  Ingredients
+                </span>
+                <p className="text-xs lg:text-[13px] text-[var(--text-primary)] opacity-80 font-light leading-relaxed">
+                  {activeProduct.ingredients.join(", ")}
+                </p>
+              </div>
+
+              {/* Nutrition Information Grid */}
+              <div className="pt-1">
+                <span className="text-[9px] uppercase font-mono tracking-[0.2em] text-[var(--text-primary)] opacity-60 font-bold block mb-3">
+                  Nutrition (Per Serving)
+                </span>
+                <div className="grid grid-cols-4 gap-2 text-center">
+                  {[
+                    { label: "Kcal", value: activeProduct.nutrition.calories },
+                    { label: "Fat", value: activeProduct.nutrition.fat },
+                    { label: "Carbs", value: activeProduct.nutrition.carbs },
+                    { label: "Prot", value: activeProduct.nutrition.protein },
+                  ].map((nut) => (
+                    <div key={nut.label} className="py-2.5 px-1 rounded-xl bg-white/5 [data-theme='light']_:bg-black/5 border border-white/10 [data-theme='light']_:border-black/5 flex flex-col items-center justify-center hover:bg-white/10 [data-theme='light']_:hover:bg-black/10 transition-colors">
+                      <span className="block text-[13px] font-bold text-[var(--text-primary)] font-mono">{nut.value}</span>
+                      <span className="block text-[8px] uppercase font-mono text-[var(--text-primary)] opacity-50 mt-1">{nut.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE FALLBACK INFO STACK (Visible only on small screens below sliding track) */}
+        <div className="md:hidden absolute bottom-24 left-6 right-6 flex flex-col gap-3 items-center text-center z-30 pointer-events-none">
+           <h3 className="text-2xl font-serif italic text-[var(--text-primary)] font-bold tracking-tight">
+              {activeProduct.name}
+           </h3>
+           <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-[280px]">
+             {activeProduct.description}
+           </p>
         </div>
 
       </div>
 
-      {/* ================= RIGHT INFORMATION CARD & SEPARATE BUTTON DOWN (Positioned closer to packets) ================= */}
-      <div
-        ref={infoCardRef}
-        className="absolute bottom-20 sm:bottom-24 md:bottom-28 lg:bottom-32 right-8 sm:right-14 md:right-20 lg:right-28 xl:right-36 z-30 flex flex-col items-end gap-2 pointer-events-auto"
-      >
-        {/* Small Sized Information Box at Right End */}
-        <div className="w-[230px] sm:w-[250px] md:w-[260px] p-3.5 sm:p-4 rounded-2xl bg-[var(--surface-glass-solid)] backdrop-blur-2xl border border-[var(--border-strong)] shadow-[var(--shadow-card)] flex flex-col gap-2 transition-all duration-500">
-          
-          {/* Top Navigation Row */}
-          <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-            <span className="text-[9px] uppercase font-mono tracking-[0.25em] text-[var(--accent-gold)] font-bold">
-              {String(activeFlavourIndex + 1).padStart(2, "0")} / 15 FLAVOURS
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={handlePrev}
-                type="button"
-                className="w-6 h-6 rounded-full bg-[var(--surface-secondary)] hover:bg-[var(--surface-elevated)] border border-[var(--border)] flex items-center justify-center text-[10px] text-[var(--text-primary)] hover:text-[var(--accent-gold)] transition-colors cursor-pointer active:scale-90"
-                aria-label="Previous Flavour"
-              >
-                ←
-              </button>
-              <button
-                onClick={handleNext}
-                type="button"
-                className="w-6 h-6 rounded-full bg-[var(--surface-secondary)] hover:bg-[var(--surface-elevated)] border border-[var(--border)] flex items-center justify-center text-[10px] text-[var(--text-primary)] hover:text-[var(--accent-gold)] transition-colors cursor-pointer active:scale-90"
-                aria-label="Next Flavour"
-              >
-                →
-              </button>
-            </div>
-          </div>
-
-          {/* Product Title */}
-          <div>
-            <h3 className="text-base sm:text-lg font-serif italic text-[var(--text-primary)] font-bold tracking-tight leading-tight">
-              {activeProduct.name}
-            </h3>
-          </div>
-
-          {/* Product Ingredients Section */}
-          <div className="border-t border-[var(--border-subtle)] pt-1.5">
-            <span className="text-[8px] uppercase font-mono tracking-[0.2em] text-[var(--text-muted)] font-bold block mb-0.5">
-              Ingredients
-            </span>
-            <p className="text-[11px] text-[var(--text-secondary)] leading-snug line-clamp-2">
-              {activeProduct.ingredients.join(", ")}
-            </p>
-          </div>
-
-          {/* Nutrition Information Grid */}
-          <div className="pt-1.5 border-t border-[var(--border-subtle)]">
-            <span className="text-[8px] uppercase font-mono tracking-[0.2em] text-[var(--text-muted)] font-bold block mb-1">
-              Nutrition (Per Serving)
-            </span>
-            <div className="grid grid-cols-4 gap-1 text-center">
-              <div className="p-1 rounded-md bg-[var(--surface-secondary)] border border-[var(--border)]">
-                <span className="block text-[11px] font-bold text-[var(--text-primary)] font-mono">{activeProduct.nutrition.calories}</span>
-                <span className="block text-[7px] uppercase font-mono text-[var(--text-muted)]">Kcal</span>
-              </div>
-              <div className="p-1 rounded-md bg-[var(--surface-secondary)] border border-[var(--border)]">
-                <span className="block text-[11px] font-bold text-[var(--text-primary)] font-mono">{activeProduct.nutrition.fat}</span>
-                <span className="block text-[7px] uppercase font-mono text-[var(--text-muted)]">Fat</span>
-              </div>
-              <div className="p-1 rounded-md bg-[var(--surface-secondary)] border border-[var(--border)]">
-                <span className="block text-[11px] font-bold text-[var(--text-primary)] font-mono">{activeProduct.nutrition.carbs}</span>
-                <span className="block text-[7px] uppercase font-mono text-[var(--text-muted)]">Carbs</span>
-              </div>
-              <div className="p-1 rounded-md bg-[var(--surface-secondary)] border border-[var(--border)]">
-                <span className="block text-[11px] font-bold text-[var(--text-primary)] font-mono">{activeProduct.nutrition.protein}</span>
-                <span className="block text-[7px] uppercase font-mono text-[var(--text-muted)]">Prot</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Separate Button Down */}
-        <Link
-          href="/products"
-          className="w-[230px] sm:w-[250px] md:w-[260px] py-2 px-4 rounded-full bg-gradient-to-r from-[#E5A855] to-[#C96F32] text-[#0B0C0E] font-bold text-[10px] sm:text-[11px] uppercase tracking-[0.2em] shadow-[0_4px_15px_rgba(229,168,85,0.25)] hover:from-white hover:to-[#EAD0A1] hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-1.5 font-mono group text-center"
+      {/* ================= BOTTOM CTA BUTTONS ================= */}
+      <div className="absolute bottom-6 sm:bottom-10 lg:bottom-12 left-0 right-0 z-30 flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-none">
+        <Link 
+          href="/products" 
+          className="pointer-events-auto px-6 py-3 rounded-full bg-[var(--surface-elevated)] hover:bg-[var(--accent-gold)] text-[var(--accent-gold)] hover:text-black border border-[var(--accent-gold)] text-[10px] sm:text-xs font-mono font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 group"
         >
           <span>VIEW ALL 15 FLAVOURS</span>
           <span className="group-hover:translate-x-1 transition-transform">→</span>
         </Link>
-
+        <button 
+          onClick={() => {
+            document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="pointer-events-auto px-6 py-3 rounded-full bg-white/5 [data-theme='light']_:bg-black/5 backdrop-blur-md hover:bg-white/10 [data-theme='light']_:hover:bg-black/10 text-[var(--text-primary)] border border-white/10 [data-theme='light']_:border-black/5 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 group"
+        >
+          <span>FEATURED PRODUCTS</span>
+          <span className="group-hover:translate-y-1 transition-transform">↓</span>
+        </button>
       </div>
+
+      <Particles count={15} layer="foreground" className="z-[50] pointer-events-none opacity-40 mix-blend-screen [data-theme='light']_:mix-blend-multiply" />
     </section>
   );
 }
