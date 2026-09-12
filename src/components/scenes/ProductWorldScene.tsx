@@ -97,7 +97,7 @@ export default function ProductWorldScene({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=520%",
+          end: isMobile ? "+=150%" : "+=520%",
           scrub: 1,
           pin: true,
           anticipatePin: 1,
